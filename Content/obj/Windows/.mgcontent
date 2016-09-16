@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/bluebolt.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/bolt.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/shield.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/boss1.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Effects/testeffect.fx</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Effects/sharpen.fx</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/gear.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/tearshot.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/char1.png</File>
+  </SourceFiles>
+</SourceFileCollection>
