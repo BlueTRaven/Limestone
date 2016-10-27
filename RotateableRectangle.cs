@@ -19,11 +19,11 @@ namespace Limestone
         public Vector2 source;
 
         public Vector2 position { get { return topLeft; } set { } }
+        public Vector2 sizeWH { get { return new Vector2(width, height); }set { } }
+        private Vector2 size;
 
         public float width { get { return  topRight.X - topLeft.X; } }
         public float height { get { return bottomLeft.Y - topLeft.Y; } }
-
-        Vector2 size;
 
         public Vector2 center { get { return VectorHelper.GetMidPoint(topLeft, bottomRight); } set { } }
 
@@ -78,7 +78,35 @@ namespace Limestone
 
             if (topOverlap && rightOverlap && bottomOverlap && leftOverlap)
             {
-                Console.WriteLine("Rotated Rectangle collision detected");
+                return true;
+            }
+            else return false;
+        }
+
+        public bool Intersects(Rectangle rectunrotated)
+        {
+            RotateableRectangle rect = new RotateableRectangle(rectunrotated);
+            Vector2 normal;    //The normal of the current side.
+            //extremely ugly way to do this
+            bool topOverlap = false, rightOverlap = false, bottomOverlap = false, leftOverlap = false;
+            normal = VectorHelper.GetNormal(topLeft, topRight);    //First: top side
+            if (CheckAllProjectedForOverlap(normal, rect))
+                topOverlap = true;
+
+            normal = VectorHelper.GetNormal(topRight, bottomRight); //Second: right side
+            if (CheckAllProjectedForOverlap(normal, rect))
+                rightOverlap = true;
+
+            normal = VectorHelper.GetNormal(bottomRight, bottomLeft);  //bottom
+            if (CheckAllProjectedForOverlap(normal, rect))
+                bottomOverlap = true;
+
+            normal = VectorHelper.GetNormal(bottomLeft, topLeft);  //left
+            if (CheckAllProjectedForOverlap(normal, rect))
+                leftOverlap = true;
+
+            if (topOverlap && rightOverlap && bottomOverlap && leftOverlap)
+            {
                 return true;
             }
             else return false;
@@ -123,7 +151,7 @@ namespace Limestone
         public void MoveTo(Vector2 moveTo, Vector2 source)
         {   //note that this moves relative to a center position.
             float currentRot = GetCurrentRotation();
-
+            RotateTo(source, 0);
             topLeft = moveTo - (size / 2);
             bottomRight = moveTo + (size / 2);
             topRight  = new Vector2(moveTo.X + (size.X / 2), moveTo.Y - (size.Y / 2));
@@ -134,7 +162,6 @@ namespace Limestone
 
         public void MoveTo(Vector2 moveTo)
         {   //note that this moves relative to a center position.
-
             topLeft = moveTo - (size / 2);
             bottomRight = moveTo + (size / 2);
             topRight = new Vector2(moveTo.X + (size.X / 2), moveTo.Y - (size.Y / 2));
@@ -145,14 +172,14 @@ namespace Limestone
         {
             Matrix rotateMatrix = Matrix.CreateRotationZ(MathHelper.ToRadians(angle));
 
-            Vector2 topLeftR = Vector2.Transform(topLeft + source, rotateMatrix);   //Rotate relative to origin
-            topLeft = topLeftR - source; //Move it back to original position
-            Vector2 bottomLeftR = Vector2.Transform(bottomLeft + source, rotateMatrix);
-            bottomLeft = bottomLeftR - source;
-            Vector2 topRightR = Vector2.Transform(topRight + source, rotateMatrix);
-            topRight = topRightR - source;
-            Vector2 bottomRightR = Vector2.Transform(bottomRight + source, rotateMatrix);
-            bottomRight = bottomRightR - source;
+            Vector2 topLeftR = Vector2.Transform(topLeft - source, rotateMatrix);   //Rotate relative to origin
+            topLeft = topLeftR + source; //Move it back to original position
+            Vector2 bottomLeftR = Vector2.Transform(bottomLeft - source, rotateMatrix);
+            bottomLeft = bottomLeftR + source;
+            Vector2 topRightR = Vector2.Transform(topRight - source, rotateMatrix);
+            topRight = topRightR + source;
+            Vector2 bottomRightR = Vector2.Transform(bottomRight - source, rotateMatrix);
+            bottomRight = bottomRightR + source;
         }
 
         public void RotateTo(Vector2 source, float angle)

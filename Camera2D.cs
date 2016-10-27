@@ -23,10 +23,15 @@ namespace Limestone
             Position = Vector2.Zero;
         }
 
+        public float oldCameraRotation;
+
         public Vector2 Position { get; set; }
+        public Vector2 prevPosition { get; set; }
         public float Rotation { get; set; }
         public float Zoom { get; set; }
         public Vector2 Origin { get; set; }
+
+        public bool moving { get { return Position != prevPosition; } set { } }
 
         public Vector2 center { get { return Origin + Position; } set { Position = value - Origin; } }
 
@@ -69,6 +74,28 @@ namespace Limestone
                 f.Normalize();
                 return f;
             }
+        }
+
+        public void AddRot(float amt)
+        {
+            Rotation = MathHelper.ToRadians(BindTo360((MathHelper.ToDegrees(Rotation) + amt)));
+        }
+
+        private float BindTo360(float val)
+        {
+            if (val > 360)
+            {
+                val -= 360;
+                
+                return val;
+            }
+            else if (val <= 0)
+            {
+                val += 360;
+                
+                return val;
+            }
+            return val;
         }
 
         public Matrix GetViewMatrix()

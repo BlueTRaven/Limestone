@@ -1,0 +1,43 @@
+{
+  "level": 20,
+  "xp": 0,
+  "xpToNextLevel": 28827,
+  "baseAtt": 27,
+  "baseDex": 9,
+  "baseWis": 16,
+  "baseVit": 7,
+  "baseSpd": 6,
+  "baseDef": 0,
+  "baseMana": 301,
+  "baseHP": 2463,
+  "equipment": [
+    {
+      "item": {
+        "wepType": 1,
+        "type": 0,
+        "itemType": 0
+      }
+    },
+    {
+      "item": {
+        "abilityType": 1,
+        "type": 0,
+        "itemType": 1
+      }
+    },
+    {},
+    {}
+  ],
+  "inventory": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "cClass": 0,
+  "position": "243.5, 220"
+}

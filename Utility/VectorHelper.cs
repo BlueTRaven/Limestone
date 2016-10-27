@@ -5,10 +5,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Limestone.Tiles;
+
 namespace Limestone.Utility
 {
     public static class VectorHelper
     {
+        public static int Next(this Random rand, float val1, float val2)
+        {
+            return rand.Next((int)val1, (int)val2);
+        }
+
         public static byte[] ConvertVectorToBytes(Vector2 vector)
         {
             float[] vecFloats = new float[] { vector.X, vector.Y };
@@ -29,9 +36,11 @@ namespace Limestone.Utility
             return Vector2.Normalize(GetPerp(B - A));
         }
 
-        public static Vector2 GetPerp(Vector2 vector)
+        public static Vector2 GetPerp(Vector2 vector, bool right = false)
         {
-            return new Vector2(-vector.Y, vector.X);
+            if (!right)
+                return new Vector2(-vector.Y, vector.X);
+            else return new Vector2(vector.Y, -vector.X);
         }
 
         public static Vector2 ProjectToAxis(Vector2 toProject, string axis)
@@ -57,6 +66,11 @@ namespace Limestone.Utility
 
             return final;
             //return projection + Vector2.Dot(toProject - projection, Vector2.Normalize(projection)) * Vector2.Normalize(projection);
+        }
+
+        public static float ProjectToVectorSigned(Vector2 A, Vector2 B)
+        {
+            return Vector2.Dot(A, GetNormal(A, B));
         }
 
         public static Vector2 FindLargest(Vector2[] vectors)
@@ -95,7 +109,39 @@ namespace Limestone.Utility
 
         public static Vector2 ConvertScreenToWorldCoords(Vector2 screenCoords)
         {
-            return screenCoords + Main.camera.Position;
+            return Vector2.Transform(screenCoords, Main.camera.GetInverseViewMatrix());
+        }
+
+        public static bool LineIntersectsRect(Point p1, Point p2, Rectangle r)
+        {
+            return LineIntersectsLine(p1, p2, new Point(r.X, r.Y), new Point(r.X + r.Width, r.Y)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X + r.Width, r.Y), new Point(r.X + r.Width, r.Y + r.Height)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X + r.Width, r.Y + r.Height), new Point(r.X, r.Y + r.Height)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X, r.Y + r.Height), new Point(r.X, r.Y)) ||
+                   (r.Contains(p1) && r.Contains(p2));
+        }
+
+        private static bool LineIntersectsLine(Point l1p1, Point l1p2, Point l2p1, Point l2p2)
+        {
+            float q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
+            float d = (l1p2.X - l1p1.X) * (l2p2.Y - l2p1.Y) - (l1p2.Y - l1p1.Y) * (l2p2.X - l2p1.X);
+
+            if (d == 0)
+            {
+                return false;
+            }
+
+            float r = q / d;
+
+            q = (l1p1.Y - l2p1.Y) * (l1p2.X - l1p1.X) - (l1p1.X - l2p1.X) * (l1p2.Y - l1p1.Y);
+            float s = q / d;
+
+            if (r < 0 || r > 1 || s < 0 || s > 1)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
