@@ -735,7 +735,7 @@ namespace Limestone.Entities
             //DrawGeometry.DrawLine(batch, center, center + test1 * 64, Color.White);
             //DrawGeometry.DrawLine(batch, center, center + test2 * 64, Color.White);
 
-            DrawHelper.StartDrawCameraSpace(batch);
+            //DrawHelper.StartDrawCameraSpace(batch);
             DrawGeometry.DrawRectangle(batch, bgBar, Color.Gray);
             DrawGeometry.DrawRectangle(batch, new Rectangle(Vector2.Zero.ToPoint(), new Vector2(healthWidth, 32).ToPoint()), Color.Red);
 
@@ -758,13 +758,7 @@ namespace Limestone.Entities
                 "Wis: " + (baseWis + wisdom) + " +" + (wisdom - baseWis) + "\n", new Vector2(1, 96), Color.White);
 
             batch.DrawString(Assets.GetFont("munro12"), Main.cbox.ShowText(), new Vector2(1, 224), Color.White);
-            DrawHelper.StartDrawWorldSpace(batch);
-
-            foreach (DamageText dt in texts)
-            {
-                dt.Draw(batch);
-            }
-
+            //DrawHelper.StartDrawWorldSpace(batch);
             //batch.DrawString(Assets.GetFont("munro12"), position.X + ", " + position.Y + " | " + position.X / 32 + ", " + position.Y / 32, new Vector2(1, 96), Color.White);
         }
 
@@ -793,6 +787,9 @@ namespace Limestone.Entities
             else //if (textureCoord.X == 5)
                 batch.Draw(texture, center + offset - (!flip ? Vector2.Zero : offset2), new Rectangle(40, (int)textureCoord.Y * 8, 16, 8),
                 Color.White, -Main.camera.Rotation, DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), textureSize), 4f, flip ? SpriteEffects.FlipHorizontally : 0, 0);
+
+            foreach (DamageText dt in texts)
+                dt.Draw(batch);
         }
         #endregion 
     }

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using Limestone.Utility;
+using Limestone.Entities;
 
 namespace Limestone
 {
@@ -113,9 +114,94 @@ namespace Limestone
             return Matrix.Invert(GetViewMatrix());
         }
 
+        private bool fading, fadeTo;
+        private float fadeTimer, fadeTimerMax;
+        private Color currentColor, fadeColor;
+        /// <summary>
+        /// Fades from transparent to a color or vice versa.
+        /// </summary>
+        /// <param name="color">The color to fade to or from.</param>
+        /// <param name="fadeTo">fade to color (true) or from color (false).</param>
+        public void SetFade(Color color, bool fadeTo, int time)
+        {
+            fadeColor = color;
+            this.fadeTo = fadeTo;
+            fadeTimer = time;
+            fadeTimerMax = time;
+
+            fading = true;
+        }
+
+        private bool quaking;
+        private float quakeRange, quakeDuration;
+        public void SetQuake(float range, int duration)
+        {
+            quakeRange = range;
+            quakeDuration = duration;
+
+            quaking = true;
+        }
+
         public void Update()
         {
-            
+            if (quaking)
+            {
+                if (quakeDuration > 0)
+                {
+                    quakeDuration--;
+
+                    Position += new Vector2((float)Main.rand.NextDouble(quakeRange, -quakeRange), (float)Main.rand.NextDouble(quakeRange, -quakeRange));
+                }
+                else quaking = false;
+            }
+            if (fadeTimer > 0)
+            {
+                fadeTimer--;
+
+                float fadep = fadeTimer / fadeTimerMax;
+                if (fadeTo)
+                    currentColor = Color.Lerp(Color.Transparent, fadeColor, fadep);
+                else
+                    currentColor = Color.Lerp(fadeColor, Color.Transparent, fadep);
+            }
+
+            if (fadeTimer <= 0)
+                fading = false;
+        }
+
+        public void Draw(World world, SpriteBatch batch)
+        {
+            foreach (Enemy e in world.enemies)
+                e.DrawHealthBar(batch);
+
+            DrawHelper.StartDrawCameraSpace(batch);
+            world.player.DrawHealthBar(batch);
+
+            if (world.player.drawInventory)
+                world.player.DrawItemsContents(batch);
+            foreach (Bag b in world.bags)
+            {
+                if (world.player.drawInventory)
+                {
+                    if (b.hitbox.Intersects(world.player.hitbox))
+                        b.DrawBagContents(batch, world.player.inventoryRect);
+                }
+            }
+
+            if (fading)
+                DrawGeometry.DrawRectangle(batch, _viewport.Bounds, currentColor);
+
+            if (world.player.dead)
+            {
+                batch.GraphicsDevice.Clear(Color.Black);
+
+                SpriteFont font = Assets.GetFont("bitfontMunro12");
+                string text = "YOU HAVE DIED!";
+                Vector2 textSize = font.MeasureString(text);
+                batch.DrawString(Assets.GetFont("bitfontMunro12"), text, center - textSize / 2, Color.White);
+            }
+
+            DrawHelper.StartDrawWorldSpace(batch);
         }
     }
 }

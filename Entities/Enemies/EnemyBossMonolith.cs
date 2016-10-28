@@ -81,7 +81,7 @@ namespace Limestone.Entities.Enemies
 
             if (currentFrame.size.Height < 16 && start)
             {
-                //height += .75f;
+                world.camera.SetQuake(4, 1);
                 tempHeight += (16f / 360f);
                 currentFrame.size.Height = (int)tempHeight;
 

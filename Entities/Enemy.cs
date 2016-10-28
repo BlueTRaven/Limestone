@@ -273,11 +273,6 @@ namespace Limestone.Entities
                 batch.Draw(Assets.GetTexture("whitePixel"), center + healthBarPos, null, Color.Gray, -Main.camera.Rotation, Vector2.Zero, new Vector2(48, 8), SpriteEffects.None, 0);
                 batch.Draw(Assets.GetTexture("whitePixel"), center + healthBarPos, null, healthbarcolor, -Main.camera.Rotation, Vector2.Zero, new Vector2(healthBarWidth, 8), SpriteEffects.None, 0);
             }
-
-            foreach (DamageText dt in texts)
-            {
-                dt.Draw(batch);
-            }
         }
 
         public override void DrawOutline(SpriteBatch batch)
@@ -309,6 +304,9 @@ namespace Limestone.Entities
             Vector2 offset = Main.camera.up * ((shadowTexture.Height * scale) / 32) + Main.camera.up * height;
             Vector2 flipOffset = Main.camera.right * (currentFrame.size.Width - setSize.Width) * scale + Main.camera.down * (currentFrame.size.Height - setSize.Height) * scale;
             batch.Draw(texture, position + offset - (flip ? flipOffset : Vector2.Zero), currentFrame.size, color, -Main.camera.Rotation, TextureOffset(), scale, flip ? SpriteEffects.FlipHorizontally : 0, 0);
+
+            foreach (DamageText dt in texts)
+                dt.Draw(batch);
 
             if (DEBUGDRAWENEMYHITBOXES)
                 hitbox.DebugDraw(batch);

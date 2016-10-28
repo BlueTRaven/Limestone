@@ -110,7 +110,7 @@ namespace Limestone
                     }
                     if (Main.KeyPress(Keys.Y))
                     {
-                        SaveHelper.Save(tiles, "tiles.json");
+                        //SaveHelper.Save(tiles, "tiles.json");
                     }
                     if (Main.KeyPress(Keys.H))
                     {
@@ -315,7 +315,7 @@ namespace Limestone
         }
 
         List<Vector2> points = new List<Vector2>();
-        public void Draw(SpriteBatch batch)
+        public void Draw(Camera2D camera, SpriteBatch batch)
         {
             if (doneGen)
             {
@@ -365,46 +365,28 @@ namespace Limestone
                     }
                 }
 
-                foreach (Enemy e in enemies)
+                /*foreach (Enemy e in enemies)
                 {
                     e.DrawHealthBar(batch);
-                }
+                }*/
 
                 foreach (EnemySpawner spawner in spawners)
                     spawner.Draw(batch);
 
-                player.DrawHealthBar(batch, minimap);
+                //player.DrawHealthBar(batch, minimap);
 
-                DrawHelper.StartDrawCameraSpace(batch);
+                //DrawHelper.StartDrawCameraSpace(batch);
 
-                if (player.drawInventory)
-                    player.DrawItemsContents(batch);
-                foreach (Bag b in bags)
-                {
-                    if (player.drawInventory)
-                    {
-                        if (b.hitbox.Intersects(player.hitbox))
-                            b.DrawBagContents(batch, player.inventoryRect);
-                    }
-                }
-                DrawHelper.StartDrawWorldSpace(batch);
+                
+                //DrawHelper.StartDrawWorldSpace(batch);
+
+                camera.Draw(this, batch);
 
                 if (respawnTimer > 0)
-                {
-                    batch.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
-
-                    SpriteFont font = Assets.GetFont("munro12");
-                    string text = "YOU HAVE DIED!";
-                    Vector2 textSize = font.MeasureString(text);
-                    batch.DrawString(font, text, camera.center - (textSize / 2), Microsoft.Xna.Framework.Color.White, -camera.Rotation, Vector2.Zero, 1, SpriteEffects.None, 0);
-
                     respawnTimer--;
-                }
 
                 if (player.dead && respawnTimer == -20)
-                {
                     respawnTimer = 120;
-                }
 
                 if (respawnTimer <= 0 && respawnTimer > -20)
                 {

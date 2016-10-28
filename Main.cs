@@ -150,6 +150,7 @@ namespace Limestone
             {
                 world = new World(camera);
             }
+            camera.Update();
 
             oldKBState = currentKBState;
             camera.prevPosition = camera.Position;
@@ -206,7 +207,7 @@ namespace Limestone
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.GetViewMatrix());
 
-            world.Draw(spriteBatch);
+            world.Draw(camera, spriteBatch);
 
             DrawHelper.StartDrawCameraSpace(spriteBatch);
             spriteBatch.DrawString(Assets.GetFont("bitfontMunro12"), fps, new Vector2(1, 96 - 16), Color.White);
