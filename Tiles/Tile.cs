@@ -92,6 +92,12 @@ namespace Limestone.Tiles
         }
     }
     #endregion
+
+    public enum TileType
+    {
+        Wall,
+        Floor
+    }
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class Tile
     {
@@ -104,6 +110,9 @@ namespace Limestone.Tiles
         [JsonProperty]
         public Biomes location;
 
+        [JsonProperty]
+        protected string textureName;
+        protected string wallTextureName;
         public Texture2D texture;
         public Color color;
 
@@ -112,6 +121,9 @@ namespace Limestone.Tiles
         [JsonProperty]
         public bool revealed = false;
         protected bool canCreateRandomSpawner = true;
+
+        [JsonProperty]
+        public TileType tileType;
         public void OnReveal(World world)
         {
             if (canCreateRandomSpawner)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,20 +12,24 @@ using Limestone.Entities;
 
 namespace Limestone.Tiles
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class TileWall : TileCollidable
     {
         Tile[] cardinalTiles;
         public bool setCardinals = false;
 
-        Texture2D wallTexture;
+        private Texture2D wallTexture;
 
-        public TileWall(Coordinate position, Texture2D texture, Texture2D wallTexture, Biomes biome, bool drawOutline = true, bool canCreateRandomSpawner = true)
+        public TileWall(Coordinate position, string textureName, string wallTextureName, Biomes biome, bool drawOutline = true, bool canCreateRandomSpawner = true)
         {
+            tileType = TileType.Wall;
             this.position = position;
             bounds = new Rectangle(position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
 
-            this.texture = texture;
-            this.wallTexture = wallTexture;
+            this.textureName = textureName;
+            this.wallTextureName = wallTextureName;
+            this.texture = Assets.GetTexture(textureName);
+            this.wallTexture = Assets.GetTexture(wallTextureName);
 
             this.location = biome;
             this.drawOutline = drawOutline;
@@ -78,10 +84,9 @@ namespace Limestone.Tiles
         }
 
         #region creation
-        public static TileWall Create(Coordinate position, Texture2D texture, Texture2D wallTexture, Biomes biome, bool billboarded = false, bool drawoutline = true, bool beneathtexture = false)
+        public static TileWall Create(Coordinate position, string texture, string wallTexture, Biomes biome, bool billboarded = false, bool drawoutline = true, bool beneathtexture = false)
         {
             TileWall tW = new TileWall(position, texture, wallTexture, biome, drawoutline);
-            //tW.location = biome;
             return tW;
         }
 
@@ -92,7 +97,7 @@ namespace Limestone.Tiles
         /// <returns>A new instance of an identecal tile.</returns>
         public override Tile Copy(Coordinate position)
         {
-            TileWall copy = new TileWall(position, texture, wallTexture, location, drawOutline);
+            TileWall copy = new TileWall(position, textureName, wallTextureName, location, drawOutline);
             copy.canCreateRandomSpawner = canCreateRandomSpawner;
             //copy.position = position;
             //copy.bounds = new Rectangle(new Point(position.x * Coordinate.coordSize, position.y * Coordinate.coordSize), new Point(Coordinate.coordSize, Coordinate.coordSize));

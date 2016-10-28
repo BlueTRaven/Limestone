@@ -5,18 +5,23 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Newtonsoft.Json;
+
 using Limestone.Utility;
 
 namespace Limestone.Tiles
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class TileFloor : Tile
     {
-        public TileFloor(Coordinate position, Texture2D texture, Biomes biome, bool canCreateRandomSpawner = true)
+        public TileFloor(Coordinate position, string textureName, Biomes biome, bool canCreateRandomSpawner = true)
         {
+            tileType = TileType.Floor;
             this.position = position;
             bounds = new Rectangle(position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
 
-            this.texture = texture;
+            this.textureName = textureName;
+            this.texture = Assets.GetTexture(textureName);
 
             this.location = biome;
             this.canCreateRandomSpawner = canCreateRandomSpawner;
@@ -29,14 +34,14 @@ namespace Limestone.Tiles
         }
 
         #region creation
-        public static TileFloor Create(Coordinate position, Texture2D texture, Biomes biome)
+        public static TileFloor Create(Coordinate position, string texture, Biomes biome)
         {
             TileFloor tF = new TileFloor(position, texture, biome);
             return tF;
         }
         public static Tile Create(Coordinate position)
         {
-            TileFloor tf = new TileFloor(position, Assets.GetTexture("water1"), Biomes.AncientLands);
+            TileFloor tf = new TileFloor(position, "water1", Biomes.AncientLands);
             return tf;
         }
 
@@ -47,7 +52,7 @@ namespace Limestone.Tiles
         /// <returns>A new instance of an identical tile.</returns>
         public override Tile Copy(Coordinate position)
         {
-            TileFloor copy = new TileFloor(position, texture, location);
+            TileFloor copy = new TileFloor(position, textureName, location);
             copy.canCreateRandomSpawner = canCreateRandomSpawner;
             return copy;
         }

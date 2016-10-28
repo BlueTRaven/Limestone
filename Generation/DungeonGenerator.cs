@@ -53,10 +53,10 @@ namespace Limestone.Generation
                 maxIterations = 50;
                 endSides = "up down left right";
 
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("rocksAncientlands2"), Biomes.Beach));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "rocksAncientlands2", Biomes.Beach));
 
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick2"), Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero,"brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick2", Biomes.Rock));
             }
             else if (type == 1)
             {
@@ -68,22 +68,22 @@ namespace Limestone.Generation
                 maxIterations = 50;
                 endSides = "up down left right";
 
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple0"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple0"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple0"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple0"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple1"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple1"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple1"), Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("purple2"), Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple0", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple0", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple0", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple0", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
+                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple2", Biomes.AncientLands));
 
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick1"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick2"), Biomes.Rock));
-                wallTiles.Add(TileWall.Create(Coordinate.Zero, Assets.GetTexture("brickTop"), Assets.GetTexture("brick2"), Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick2", Biomes.Rock));
+                wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick2", Biomes.Rock));
             }
         }
 
@@ -208,7 +208,7 @@ namespace Limestone.Generation
 
                                 if (x == 1 || y == 1 || x == r.bounds.Width - 2 || y == r.bounds.Height - 2 || Main.rand.Next(0, 6) == 0)
                                 {
-                                    TileFloor tile = new TileFloor(Coordinate.Zero, Assets.GetTexture("grassAncientlands1"), Biomes.AncientLands);
+                                    TileFloor tile = new TileFloor(Coordinate.Zero, "grassAncientlands1", Biomes.AncientLands);
                                     world.tiles[xpos, ypos] = tile.Copy(new Coordinate(xpos, ypos));
                                 }
                             }

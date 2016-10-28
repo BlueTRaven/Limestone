@@ -89,7 +89,6 @@
     <Compile Include="RotationRect.cs" />
     <Compile Include="SaveHelper.cs" />
     <Compile Include="Utility\Extentions.cs" />
-    <Compile Include="Tiles\Chunk.cs" />
     <Compile Include="Tiles\Tile.cs" />
     <Compile Include="Tiles\TileBreakable.cs" />
     <Compile Include="Tiles\TileCollidable.cs" />

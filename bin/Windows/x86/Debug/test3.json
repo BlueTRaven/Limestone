@@ -1,0 +1,68 @@
+{
+  "level": 1,
+  "xp": 0,
+  "xpToNextLevel": 50,
+  "baseAtt": 0,
+  "baseDex": 0,
+  "baseWis": 0,
+  "baseVit": 0,
+  "baseDef": 0,
+  "baseMana": 200,
+  "baseHP": 100,
+  "equipment": [
+    {
+      "item": {
+        "wepType": 1,
+        "type": 11,
+        "itemType": 0
+      }
+    },
+    {
+      "item": {
+        "abilityType": 0,
+        "type": 4,
+        "itemType": 1
+      }
+    },
+    {
+      "item": {
+        "type": 12,
+        "itemType": 2
+      }
+    },
+    {
+      "item": {
+        "type": 0,
+        "itemType": 3
+      }
+    }
+  ],
+  "inventory": [
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    },
+    {
+      "item": null
+    }
+  ],
+  "cClass": 0,
+  "position": "3432, 1992"
+}

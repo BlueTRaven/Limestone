@@ -94,7 +94,7 @@ namespace Limestone.Generation
             foreach (VoroniPoly poly in polys)
             {
                 int rand = Main.rand.Next(1, 7); 
-                poly.Fill(TileFloor.Create(Coordinate.Zero, Assets.GetTexture("beach" + rand), (Biomes)rand));
+                poly.Fill(TileFloor.Create(Coordinate.Zero, "beach" + rand, (Biomes)rand));
             }
             MovePolysToWorld();
             worldGenText = "DONE!";
@@ -270,7 +270,7 @@ namespace Limestone.Generation
             {
                 for (int y = 0; y < tiles.GetLength(1); y++)
                 {
-                    tiles[x, y] = TileFloor.Create(new Coordinate(x, y), Assets.GetTexture("water1"), Biomes.Sea);
+                    tiles[x, y] = TileFloor.Create(new Coordinate(x, y), "water1", Biomes.Sea);
                     //returnTiles.Add(tiles[x, y]);
                 }
             }
@@ -283,19 +283,19 @@ namespace Limestone.Generation
             GenerateOceanFill(tiles);
             float b = 35840;
             worldGenText = "Generating lowlands...";
-            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, Assets.GetTexture("grassLowlands1"), Biomes.LowLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .80f, b), 2048, true, true); //Note that min is 6273 instead of 6272 because it will generate odd beaches if the midlands overlap the beach
+            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, "grassLowlands1", Biomes.LowLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .80f, b), 2048, true, true); //Note that min is 6273 instead of 6272 because it will generate odd beaches if the midlands overlap the beach
             worldGenText = "Generating midlands...";
-            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, Assets.GetTexture("grassMidlands1"), Biomes.MidLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .60f, b * .78f), 2048, true, true);
+            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, "grassMidlands1", Biomes.MidLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .60f, b * .78f), 2048, true, true);
             worldGenText = "Generating highlands...";
-            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, Assets.GetTexture("grassHighlands1"), Biomes.HighLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .40f, b * .58f), 2048, true, true);
+            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, "grassHighlands1", Biomes.HighLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .40f, b * .58f), 2048, true, true);
             worldGenText = "Generating ancientlands...";
-            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, Assets.GetTexture("grassAncientlands1"), Biomes.AncientLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .20f, b * .38f), 2048, true, true);
+            GenerateRand(tiles, TileFloor.Create(Coordinate.Zero, "grassAncientlands1", Biomes.AncientLands), new Vector2(36864), new Vector2(256, 256), new Vector2(b * .20f, b * .38f), 2048, true, true);
 
             worldGenText = "Generating beach...";
             GenerateBeach(tiles, 8);
 
             worldGenText = "Generating rocks...";
-            GenerateRock(tiles, 8, TileBreakable.Create(Coordinate.Zero, Assets.GetTexture("rock1"), TileFloor.Create(Coordinate.Zero, Assets.GetTexture("grassAncientlands1"), Biomes.Rock), 40, Biomes.Rock));
+            GenerateRock(tiles, 8, TileBreakable.Create(Coordinate.Zero, Assets.GetTexture("rock1"), TileFloor.Create(Coordinate.Zero, "grassAncientlands1", Biomes.Rock), 40, Biomes.Rock));
             GenerateRocks(tiles, Biomes.LowLands, 8192);
             GenerateRocks(tiles, Biomes.MidLands, 8192);
             GenerateRocks(tiles, Biomes.HighLands, 8192);
@@ -399,7 +399,7 @@ namespace Limestone.Generation
                                     if (a != 0 && b != 0) //if it's not the middle tile
                                     {
                                         if (tiles[x + a, y + b] != null && tiles[x + a, y + b].location == Biomes.Sea)
-                                            tiles[x + a, y + b] = TileFloor.Create(new Coordinate(x + a, y + b), Assets.GetTexture("beach1"), Biomes.Beach);
+                                            tiles[x + a, y + b] = TileFloor.Create(new Coordinate(x + a, y + b), "beach1", Biomes.Beach);
                                     }
                                 }
                             }

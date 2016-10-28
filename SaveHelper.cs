@@ -52,16 +52,54 @@ namespace Limestone
             }
         }
 
+        public class TileConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(Tile).IsAssignableFrom(objectType);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                if (reader.Value != null)
+                {
+                    JObject item = JObject.Load(reader);
+
+                    if (item["tileType"].Value<TileType>() == TileType.Floor)
+                    {
+                        return item.ToObject<TileFloor>();
+                    }
+                    else if (item["tileType"].Value<TileType>() == TileType.Wall)
+                    {
+                        return item.ToObject<TileWall>();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Did not have a correct tile type!\nType: " + item["tileType"].Value<TileType>() + "\n Falling back to TileFloor!");
+                        return item.ToObject<TileFloor>();
+                    }
+                }
+                return null;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+            }
+        }
+
         public static void Save(object obj, string saveName)
         {
-            using (StreamWriter file = File.CreateText(@"" + saveName))
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Include;
+            serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            serializer.Formatting = Formatting.Indented;
+
+            using (StreamWriter sw = new StreamWriter(@"" + saveName))
+            using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                serializer.ReferenceLoopHandling = ReferenceLoopHandling.Error;
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(file, obj);
+                serializer.Serialize(writer, obj);
             }
+        
         }
 
         public static object Load(string loadName, JsonConverter converter)
@@ -71,6 +109,16 @@ namespace Limestone
                 string content = sr.ReadToEnd();
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(content, converter);
 
+                return obj;
+            }
+        }
+
+        public static Tile[,] LoadTiles(string fileName)
+        {
+            using (StreamReader sr = new StreamReader(@"" + fileName + ".json"))
+            {
+                string content = sr.ReadToEnd();
+                Tile[,] obj = JsonConvert.DeserializeObject<Tile[,]>(content, new TileConverter());
                 return obj;
             }
         }

@@ -20,12 +20,14 @@ using Limestone.Generation;
 
 namespace Limestone
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class World
     {
         public Player player;
         public Camera2D camera;
 
         Effect testEffect;
+        [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Serialize)]
         public Tile[,] tiles;
         public List<TileWall> wallTiles = new List<TileWall>();
         private List<Tile> drawTiles = new List<Tile>();
@@ -110,13 +112,15 @@ namespace Limestone
                     }
                     if (Main.KeyPress(Keys.Y))
                     {
-                        //SaveHelper.Save(tiles, "tiles.json");
+                        SaveHelper.Save(tiles, "tiles.json");
                     }
                     if (Main.KeyPress(Keys.H))
                     {
-                        Player p = SaveHelper.LoadPlayer("test2");
-                        entities[entities.IndexOf(player)] = p;
-                        player = p;
+                        Tile[,] loaded = SaveHelper.LoadTiles("tiles");
+                        tiles = loaded;
+                        //Player p = SaveHelper.LoadPlayer("test2");
+                        //entities[entities.IndexOf(player)] = p;
+                        //player = p;
                     }
                     if (Main.KeyPress(Keys.G))
                         takeshot = true;
