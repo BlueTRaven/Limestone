@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Threading;
 using System.Linq;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using Limestone.Utility;
-using System.Collections.Generic;
+using Limestone.Inp;
+using Limestone.Guis;
 
 namespace Limestone
 {
+    #region FC
+
     public class FrameCounter
     {
         public FrameCounter()
@@ -47,11 +51,13 @@ namespace Limestone
             return true;
         }
     }
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    #endregion 
+
     public class Main : Game
     {
+        public static string fps;
+
+        public static int globalTimer;
         public bool paused;
 
         public static GraphicsDeviceManager graphics;
@@ -59,22 +65,23 @@ namespace Limestone
 
         public World world;
 
-        public static Camera2D camera;
-        public static Random rand;
+        public static GameCamera camera;
         public static GameMouse mouse;
+        public static GameKeyboard keyboard;
+        public static Random rand;
         public static Chatbox cbox;
         public static readonly int WIDTH = 800, HEIGHT = 600;
         public static bool isActive = true;
 
         public static bool typing;
+
+
+        public static bool hold = true;
         public Main()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
-
-        public static KeyboardState currentKBState;
-        public static KeyboardState oldKBState;
 
         private FrameCounter _frameCounter = new FrameCounter();
 
@@ -89,11 +96,13 @@ namespace Limestone
             // TODO: Add your initialization logic here
             Logger.CreateNewLogFile();
             this.IsMouseVisible = true;
-            camera = new Camera2D(GraphicsDevice.Viewport);
             rand = new Random(1);//DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) * DateTime.Now.Day * DateTime.Now.Month * DateTime.Now.Year * DateTime.Now.Second * DateTime.Now.Millisecond);
             //GIVE IT SOME REAAAAAAAAAAAAAAAAAAAAAL RANDOMNESS
+            camera = new GameCamera(GraphicsDevice.Viewport);
             mouse = new GameMouse();
+            keyboard = new GameKeyboard();
             cbox = new Chatbox();
+
             base.Initialize();
         }
 
@@ -126,67 +135,42 @@ namespace Limestone
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            globalTimer++;
             Main.isActive = IsActive;
-            currentKBState = Keyboard.GetState();
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                //Exit();
 
             cbox.Update(this);
 
             mouse.Update();
-            if (KeyPress(Keys.P))
-                paused = !paused;
-            if (world != null)
-            {
-                if (!paused)
-                    world.Update();
-                else if (paused && KeyPress(Keys.O))
-                    world.Update();
-
-                //if (world.player != null)
-                    //world.player.index = socket.index;
-            }
-            else
-            {
-                world = new World(camera);
-            }
+            keyboard.Update();
             camera.Update();
 
-            oldKBState = currentKBState;
-            camera.prevPosition = camera.Position;
-            mouse.prevState = mouse.state;
-            base.Update(gameTime);
-        }
+            if (Main.keyboard.KeyPressed(Keys.P))
+                paused = !paused;
 
-        public static bool KeyPress(Keys key)
-        {
-            return currentKBState.IsKeyDown(key) && oldKBState.IsKeyUp(key);
-        }
-
-        public static bool KeyPressContinuous(Keys key)
-        {
-            return currentKBState.IsKeyDown(key);
-        }
-
-        public static bool AnyTwoKeysPressedTogether(Keys[] keys)
-        {
-            int num = 0;
-            foreach (Keys k in keys)
+            if (!hold)
             {
-                if (currentKBState.IsKeyDown(k))
-                    num++;
+                if (world != null)
+                {
+                    if (!paused)
+                        world.Update();
+                    else if (paused && Main.keyboard.KeyPressed(Keys.O))
+                        world.Update();
+                }
             }
 
-            if (num >= 2)
-                return true;
-            else return false;
+            camera.PostUpdate(this);
+            mouse.PostUpdate();
+            keyboard.PostUpdate();
+            base.Update(gameTime);
         }
 
         public static void AwaitNextKeyPress()
         {
             while (true)
             {
-                if (!KeyPress(Keys.None))
+                if (!keyboard.KeyPressed(Keys.None))
                     break;
             }
         }
@@ -201,16 +185,16 @@ namespace Limestone
 
             _frameCounter.Update(deltaTime);
 
-            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
+            fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
 
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.GetViewMatrix());
 
-            world.Draw(camera, spriteBatch);
+            if (world != null) world.Draw(camera, spriteBatch);
 
             DrawHelper.StartDrawCameraSpace(spriteBatch);
-            spriteBatch.DrawString(Assets.GetFont("bitfontMunro12"), fps, new Vector2(1, 96 - 16), Color.White);
+            camera.Draw(this, spriteBatch);
             DrawHelper.StartDrawCameraSpace(spriteBatch);
             mouse.Draw(spriteBatch);
             spriteBatch.End();

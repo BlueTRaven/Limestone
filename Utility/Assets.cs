@@ -87,6 +87,7 @@ namespace Limestone.Utility
             textures.Add("notex", content.Load<Texture2D>("Textures/notex"));
             //Gui
             textures.Add("guiItemslot", content.Load<Texture2D>("Textures/GuiItemslot"));
+            textures.Add("loading", content.Load<Texture2D>("Textures/loading"));
             //Enemies
             textures.Add("char1", content.Load<Texture2D>("Textures/char1"));
             textures.Add("char2", content.Load<Texture2D>("Textures/char2"));
@@ -226,6 +227,7 @@ namespace Limestone.Utility
             fonts.Add("munro8", content.Load<SpriteFont>("Fonts/munro8"));
             fonts.Add("bitfontMunro12", content.Load<SpriteFont>("Fonts/bitfontMunro12"));
             fonts.Add("bitfontMunro8", content.Load<SpriteFont>("Fonts/bitfontMunro8"));
+            fonts.Add("bitfontMunro23BOLD", content.Load<SpriteFont>("Fonts/bitfontMunro23BOLD"));
 
             shaders.Add("test", content.Load<Effect>("Effects/sharpen"));
 

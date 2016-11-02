@@ -170,6 +170,12 @@ namespace Limestone.Generation
             world.entities.Add(world.player);
 
             world.player.position = start.bounds.ToCoordinateScale().Center.ToVector2();
+
+
+            for (long i = 0; i < 1; i++)//debug so I can take a look at the loading thing
+                continue;
+
+            Main.camera.SetFade(Color.Black, true, 120);
         }
 
         public void GenerateRooms(World world)

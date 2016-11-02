@@ -37,9 +37,9 @@ namespace Limestone.Items
             tierPos = new Vector2(192 - 24, 24);
             typePos = new Vector2(8, 24);
             classusePos = new Vector2(8, 36);
-            Vector2 size = font.MeasureString(DrawHelper.WrapText(font, abilitydescription, 192 - 8));
+            Vector2 size = font.MeasureString(TextHelper.WrapText(font, abilitydescription, 192 - 8));
             abilitydescriptionPos = new Vector2(8, 48);
-            Vector2 size2 = font.MeasureString(DrawHelper.WrapText(font, description, 192 - 8));
+            Vector2 size2 = font.MeasureString(TextHelper.WrapText(font, description, 192 - 8));
             descriptionPos = new Vector2(8, 48 + size.Y);
             statsPos = new Vector2(8, 48 + size2.Y + size.Y);
 
@@ -66,12 +66,12 @@ namespace Limestone.Items
             batch.DrawString(font, classuse, bounds.Location.ToVector2() + classusePos, Color.White);
             if (!abilitydescription.Contains("@NULL@"))
             {
-                batch.DrawString(font, DrawHelper.WrapText(font, abilitydescription, smallBounds.Width - 4), bounds.Location.ToVector2() + abilitydescriptionPos, Color.White);
-                batch.DrawString(font, DrawHelper.WrapText(font, description, smallBounds.Width - 4), bounds.Location.ToVector2() + descriptionPos, Color.White);
+                batch.DrawString(font, TextHelper.WrapText(font, abilitydescription, smallBounds.Width - 4), bounds.Location.ToVector2() + abilitydescriptionPos, Color.White);
+                batch.DrawString(font, TextHelper.WrapText(font, description, smallBounds.Width - 4), bounds.Location.ToVector2() + descriptionPos, Color.White);
             }
             else
             {
-                batch.DrawString(font, DrawHelper.WrapText(font, description, smallBounds.Width - 4), bounds.Location.ToVector2() + abilitydescriptionPos, Color.White);
+                batch.DrawString(font, TextHelper.WrapText(font, description, smallBounds.Width - 4), bounds.Location.ToVector2() + abilitydescriptionPos, Color.White);
             }
             batch.DrawString(font, stats.ToString(), bounds.Location.ToVector2() + statsPos, Color.White);
         }

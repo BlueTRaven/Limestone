@@ -159,5 +159,7 @@
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Tiles/purple1.png</File>
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Tiles/purple2.png</File>
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Enemies/shadeEye.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/loading.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Fonts/bitfontMunro23BOLD.bmp</File>
   </SourceFiles>
 </SourceFileCollection>

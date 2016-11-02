@@ -115,7 +115,7 @@ namespace Limestone
 
         public static Tile[,] LoadTiles(string fileName)
         {
-            using (StreamReader sr = new StreamReader(@"" + fileName + ".json"))
+            using (StreamReader sr = new StreamReader(fileName + ".json"))
             {
                 string content = sr.ReadToEnd();
                 Tile[,] obj = JsonConvert.DeserializeObject<Tile[,]>(content, new TileConverter());

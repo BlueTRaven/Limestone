@@ -11,13 +11,20 @@ using Limestone.Utility;
 using Limestone.Items;
 using Limestone.Entities;
 
-namespace Limestone
+namespace Limestone.Inp
 {
+    public enum MouseButton
+    {
+        Left,
+        Right,
+        Middle
+    }
+
     public class GameMouse
     {
-        public MouseState state;
+        public MouseState currentState;
         public MouseState prevState;
-        public Vector2 position { get { return state.Position.ToVector2(); } }
+        public Vector2 position { get { return currentState.Position.ToVector2(); } }
         public Item heldItem;
         public ItemSlot hoveredSlot;
 
@@ -34,13 +41,13 @@ namespace Limestone
                 errorNoise.Pitch = -.7f;
                 errorNoise.Volume = .5f;
             }
-            state = Mouse.GetState();
+            currentState = Mouse.GetState();
 
-            if (MouseKeyPress("left"))
-                lastClickPos = state.Position.ToVector2();
+            if (MouseKeyPress(MouseButton.Left))
+                lastClickPos = currentState.Position.ToVector2();
             if (hoveredSlot != null)
             {
-                if (MouseKeyPress("left"))
+                if (MouseKeyPress(MouseButton.Left))
                 {
                     if (heldItem == null)
                     {   //if there is no current held item, set the held item to the current hovered slot's item and set that slot's item to null.
@@ -104,16 +111,23 @@ namespace Limestone
             hoveredSlot = null;
         }
 
-        public bool MouseKeyPress(string button)
+        public void PostUpdate()
         {
-            if (button == "left")
-                return state.LeftButton == ButtonState.Pressed && prevState.LeftButton == ButtonState.Released;
+            prevState = currentState;
+        }
+
+        public bool MouseKeyPress(MouseButton button)
+        {
+            if (button == MouseButton.Left)
+                return currentState.LeftButton == ButtonState.Pressed && prevState.LeftButton == ButtonState.Released;
             else return false;
         }
 
-        public bool MouseKeyPressContinuous(string button)
+        public bool MouseKeyPressContinuous(MouseButton button)
         {
-            return Main.mouse.prevState.LeftButton == ButtonState.Pressed;
+            if (button == MouseButton.Left)
+                return Main.mouse.prevState.LeftButton == ButtonState.Pressed;
+            else return false;
         }
 
         public void Draw(SpriteBatch batch)

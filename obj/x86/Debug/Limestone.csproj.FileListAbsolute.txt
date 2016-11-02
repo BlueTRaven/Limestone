@@ -185,3 +185,5 @@ C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Tiles\purple1.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Tiles\purple2.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Enemies\shadeEye.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\loading.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Fonts\bitfontMunro23BOLD.xnb

@@ -48,7 +48,7 @@ namespace Limestone
             {
                 SpriteFont font = Assets.GetFont("munro12");
                 StringBuilder wrapped = new StringBuilder();
-                wrapped.Append(DrawHelper.WrapText(font, sb.ToString(), 256));
+                wrapped.Append(TextHelper.WrapText(font, sb.ToString(), 256));
 
                 this.wrapped = wrapped.ToString();
                 return this.wrapped.ToString();

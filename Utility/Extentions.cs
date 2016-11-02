@@ -21,6 +21,16 @@ namespace Limestone.Utility
         {
             return rand.NextDouble() * (maximum - minimum) + minimum;
         }
+        
+        public static Rectangle CreateRectangle(Vector2 location, Vector2 size)
+        {
+            return new Rectangle(location.ToPoint(), size.ToPoint());
+        }
+
+        public static Rectangle CreateRectangle(Vector2 location, int sizeX, int sizeY)
+        {
+            return new Rectangle((int)location.X, (int)location.Y, sizeX, sizeY);
+        }
 
         public static Color GetPixel(this Color[] colors, int x, int y, int width)
         {

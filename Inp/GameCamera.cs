@@ -7,14 +7,17 @@ using Microsoft.Xna.Framework.Input;
 
 using Limestone.Utility;
 using Limestone.Entities;
+using Limestone.Guis;
 
 namespace Limestone
 {
-    public class Camera2D
+    public class GameCamera
     {
+        public Gui activeGui;
+
         private readonly Viewport _viewport;
 
-        public Camera2D(Viewport viewport)
+        public GameCamera(Viewport viewport)
         {
             _viewport = viewport;
 
@@ -34,7 +37,8 @@ namespace Limestone
 
         public bool moving { get { return Position != prevPosition; } set { } }
 
-        public Vector2 center { get { return Origin + Position; } set { Position = value - Origin; } }
+        public Vector2 center { get { return new Vector2(_viewport.Width / 2, _viewport.Height / 2); } set { } }
+        public Vector2 worldCenter { get { return Origin + Position; } set { Position = value - Origin; } }
 
         public Vector2 down
         {
@@ -144,6 +148,25 @@ namespace Limestone
 
         public void Update()
         {
+            if (fadeTimer > 0)
+            {
+                fadeTimer--;
+
+                float step = fadeTimer / fadeTimerMax;
+                if (fadeTo)
+                    currentColor = Color.Lerp(Color.Transparent, fadeColor, step);
+                else
+                    currentColor = Color.Lerp(fadeColor, Color.Transparent, step);
+            }
+
+            if (fadeTimer <= 0)
+                fading = false;
+        }
+
+        public void PostUpdate(Main main)
+        {
+            if (activeGui == null)
+                activeGui = new GuiMainMenu();
             if (quaking)
             {
                 if (quakeDuration > 0)
@@ -154,52 +177,54 @@ namespace Limestone
                 }
                 else quaking = false;
             }
-            if (fadeTimer > 0)
-            {
-                fadeTimer--;
 
-                float fadep = fadeTimer / fadeTimerMax;
-                if (fadeTo)
-                    currentColor = Color.Lerp(Color.Transparent, fadeColor, fadep);
-                else
-                    currentColor = Color.Lerp(fadeColor, Color.Transparent, fadep);
-            }
-
-            if (fadeTimer <= 0)
-                fading = false;
+            activeGui.Update(main);
+            prevPosition = Position;
         }
 
-        public void Draw(World world, SpriteBatch batch)
+        public void Draw(Main main, SpriteBatch batch)
         {
-            foreach (Enemy e in world.enemies)
-                e.DrawHealthBar(batch);
+            if (main.world != null)
+                foreach (Enemy e in main.world.enemies)
+                    e.DrawHealthBar(batch);
 
             DrawHelper.StartDrawCameraSpace(batch);
-            world.player.DrawHealthBar(batch);
-
-            if (world.player.drawInventory)
-                world.player.DrawItemsContents(batch);
-            foreach (Bag b in world.bags)
+            if (!Main.hold && main.world != null)
             {
-                if (world.player.drawInventory)
+                if (!main.world.worldGenThread.IsAlive)
                 {
-                    if (b.hitbox.Intersects(world.player.hitbox))
-                        b.DrawBagContents(batch, world.player.inventoryRect);
+                    if (!activeGui.stopsWorldDraw)
+                    {
+                        main.world.player.DrawHealthBar(batch);
+
+                        if (main.world.player.drawInventory)
+                            main.world.player.DrawItemsContents(batch);
+                        foreach (Bag b in main.world.bags)
+                        {
+                            if (main.world.player.drawInventory)
+                            {
+                                if (b.hitbox.Intersects(main.world.player.hitbox))
+                                    b.DrawBagContents(batch, main.world.player.inventoryRect);
+                            }
+                        }
+
+                        if (main.world.player.dead)
+                        {
+                            batch.GraphicsDevice.Clear(Color.Black);
+
+                            SpriteFont font = Assets.GetFont("bitfontMunro12");
+                            string text = "YOU HAVE DIED!";
+                            Vector2 textSize = font.MeasureString(text);
+                            batch.DrawString(Assets.GetFont("bitfontMunro12"), text, worldCenter - textSize / 2, Color.White);
+                        }
+                    }
                 }
             }
 
+            activeGui.Draw(batch);
+
             if (fading)
                 DrawGeometry.DrawRectangle(batch, _viewport.Bounds, currentColor);
-
-            if (world.player.dead)
-            {
-                batch.GraphicsDevice.Clear(Color.Black);
-
-                SpriteFont font = Assets.GetFont("bitfontMunro12");
-                string text = "YOU HAVE DIED!";
-                Vector2 textSize = font.MeasureString(text);
-                batch.DrawString(Assets.GetFont("bitfontMunro12"), text, center - textSize / 2, Color.White);
-            }
 
             DrawHelper.StartDrawWorldSpace(batch);
         }

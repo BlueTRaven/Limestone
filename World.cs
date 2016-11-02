@@ -23,8 +23,8 @@ namespace Limestone
     [JsonObject(MemberSerialization.OptIn)]
     public class World
     {
+        public static int worldTimer;
         public Player player;
-        public Camera2D camera;
 
         Effect testEffect;
         [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Serialize)]
@@ -55,261 +55,265 @@ namespace Limestone
 
         private Texture2D minimap;
 
-        private Thread worldGenThread;
+        public Thread worldGenThread;
         private bool doneGen = false;
 
-        public World(Camera2D camera)
+        public World()
         {
-            this.camera = camera;
+            worldTimer = 0;
             testEffect = Assets.GetEffect("test");
-
-            CreateWorld();
         }
 
         public void Update()
         {
             if (!worldGenThread.IsAlive)
             {
-                entities = entities.OrderBy(x =>
+                if (!Main.camera.activeGui.stopsWorldInput)
                 {
-                    if (x.tType != EntityType.Spawner)
+                    entities = entities.OrderBy(x =>
                     {
-                        Vector2 yRot = Vector2.Transform(x.hitbox.center, Matrix.CreateRotationZ(Main.camera.Rotation));
+                        if (x.tType != EntityType.Spawner)
+                        {
+                            Vector2 yRot = Vector2.Transform(x.hitbox.center, Matrix.CreateRotationZ(Main.camera.Rotation));
+                            return yRot.Y;
+                        }
+                        return 0;
+                    }).ToList();
+
+                    wallTiles = wallTiles.OrderBy(x =>
+                    {
+                        Vector2 yRot = Vector2.Transform(x.bounds.Center.ToVector2(), Matrix.CreateRotationZ(Main.camera.Rotation));
                         return yRot.Y;
-                    }
-                    return 0;
-                }).ToList();
+                    }).ToList();
 
-                wallTiles = wallTiles.OrderBy(x =>
-                {
-                    Vector2 yRot = Vector2.Transform(x.bounds.Center.ToVector2(), Matrix.CreateRotationZ(Main.camera.Rotation));
-                    return yRot.Y;
-                }).ToList();
-
-                if (player.moving)
-                {
-                    List<Tile> nearTiles = new List<Tile>();
-
-                    nearTiles = GetNearTiles(player, 16);
-
-                    foreach (Tile t in nearTiles)
+                    if (player.moving)
                     {
-                        if (!t.revealed)
+                        List<Tile> nearTiles = new List<Tile>();
+
+                        nearTiles = GetNearTiles(player, 16);
+
+                        foreach (Tile t in nearTiles)
                         {
-                            t.revealed = true;
-                            t.OnReveal(this);
-                        }
-                    }
-                }
-                if (player != null)
-                    doneGen = true;
-                if (doneGen)
-                {
-                    if (Main.KeyPress(Keys.F))
-                    {
-                        CreateEnemy(new EnemyBossMonolith(player.center + new Vector2(0, 256)));
-                        player.GiveXp(90000);
-                    }
-                    if (Main.KeyPress(Keys.Y))
-                    {
-                        SaveHelper.Save(tiles, "tiles.json");
-                    }
-                    if (Main.KeyPress(Keys.H))
-                    {
-                        Tile[,] loaded = SaveHelper.LoadTiles("tiles");
-                        tiles = loaded;
-                        //Player p = SaveHelper.LoadPlayer("test2");
-                        //entities[entities.IndexOf(player)] = p;
-                        //player = p;
-                    }
-                    if (Main.KeyPress(Keys.G))
-                        takeshot = true;
-
-                    foreach(Entity entity in entities.ToList())
-                    {
-                        if (entity.tType == EntityType.Player)
-                            entity.Update(this);   //Projectiles, TODO particles
-                        else if (entity.tType == EntityType.Projectile)
-                            entity.Update(this);
-                        else if (entity.tType == EntityType.Bag)
-                            entity.Update(this);
-                        else if (entity.tType == EntityType.Spawner)
-                            entity.Update(this);
-                        else if (entity.tType == EntityType.Particle)
-                            entity.Update(this);
-                        else if (entity.tType == EntityType.Enemy)
-                        {
-                            Enemy e = (Enemy)entity;
-
-                            float dist = Vector2.Distance(e.center, player.center);
-                            if (dist < e.activeDistance)
-                                e.active = true;
-                            else e.active = false;
-
-                            if (e.active)
-                                e.Update(this);
-                        }
-
-                        if (entity.tType == EntityType.Projectile)
-                        {
-                            Projectile2 p = (Projectile2)entity;
-
-                            if (!p.friendly)
+                            if (!t.revealed)
                             {
-                                if (player.hitbox.Intersects(p.hitbox))
-                                {
-                                    if (!p.hitEntities.Contains(p))
-                                        player.TakeDamage((int)p.damage, p, this);
-
-                                    if (!p.piercing)
-                                        p.Die(this);
-                                    else
-                                        p.hitEntities.Add(p);
-                                }
+                                t.revealed = true;
+                                t.OnReveal(this);
                             }
-                            else
-                            {
-                                foreach (Enemy e in enemies)
-                                {
-                                    if (!e.untargetable)
-                                    {
-                                        if (e.hitbox.Intersects(p.hitbox))
-                                        {
-                                            if (!p.hitEntities.Contains(e))
-                                                e.TakeDamage((int)p.damage, p, this);
+                        }
+                    }
+                    if (player != null)
+                        doneGen = true;
+                    if (doneGen)
+                    {
+                        if (Main.keyboard.KeyPressed(Keys.F))
+                        {
+                            CreateEnemy(new EnemyBossMonolith(player.center + new Vector2(0, 256)));
+                            player.GiveXp(90000);
+                        }
+                        if (Main.keyboard.KeyPressed(Keys.Y))
+                        {
+                            SaveHelper.Save(tiles, "tiles.json");
+                        }
+                        if (Main.keyboard.KeyPressed(Keys.H))
+                        {
+                            Tile[,] loaded = SaveHelper.LoadTiles("tiles");
+                            tiles = loaded;
+                            //Player p = SaveHelper.LoadPlayer("test2");
+                            //entities[entities.IndexOf(player)] = p;
+                            //player = p;
+                        }
+                        if (Main.keyboard.KeyPressed(Keys.G))
+                            takeshot = true;
 
-                                            if (!p.piercing)
-                                                entity.Die(this);
-                                            else
-                                                p.hitEntities.Add(e);
+                        foreach (Entity entity in entities.ToList())
+                        {
+                            if (entity.tType == EntityType.Player)
+                            {
+                                entity.Update(this);   //Projectiles, TODO particles
+                            }
+                            else if (entity.tType == EntityType.Projectile)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Bag)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Spawner)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Particle)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Enemy)
+                            {
+                                Enemy e = (Enemy)entity;
+
+                                float dist = Vector2.Distance(e.center, player.center);
+                                if (dist < e.activeDistance)
+                                    e.active = true;
+                                else e.active = false;
+
+                                if (e.active)
+                                    e.Update(this);
+                            }
+
+                            if (entity.tType == EntityType.Projectile)
+                            {
+                                Projectile2 p = (Projectile2)entity;
+
+                                if (!p.friendly)
+                                {
+                                    if (player.hitbox.Intersects(p.hitbox))
+                                    {
+                                        if (!p.hitEntities.Contains(p))
+                                            player.TakeDamage((int)p.damage, p, this);
+
+                                        if (!p.piercing)
+                                            p.Die(this);
+                                        else
+                                            p.hitEntities.Add(p);
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (Enemy e in enemies)
+                                    {
+                                        if (!e.untargetable)
+                                        {
+                                            if (e.hitbox.Intersects(p.hitbox))
+                                            {
+                                                if (!p.hitEntities.Contains(e))
+                                                    e.TakeDamage((int)p.damage, p, this);
+
+                                                if (!p.piercing)
+                                                    entity.Die(this);
+                                                else
+                                                    p.hitEntities.Add(e);
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        if (entity.tileCollides)
-                        {
-                            List<Tile> nearTiles = GetNearTiles(entity);
-
-                            foreach (Tile t in nearTiles)
+                            if (entity.tileCollides)
                             {
-                                if (t is TileCollidable)
+                                List<Tile> nearTiles = GetNearTiles(entity);
+
+                                foreach (Tile t in nearTiles)
                                 {
-                                    if (entity.hitbox.Intersects(t.bounds))
+                                    if (t is TileCollidable)
                                     {
-                                        if (entity.tType == EntityType.Projectile)
+                                        if (entity.hitbox.Intersects(t.bounds))
                                         {
-                                            Projectile2 p = (Projectile2)entity;
-
-                                            if (p.tileCollides)
-                                                entity.Die(this);
-
-                                            if (t is TileBreakable)
+                                            if (entity.tType == EntityType.Projectile)
                                             {
-                                                TileBreakable tB = (TileBreakable)t;
+                                                Projectile2 p = (Projectile2)entity;
 
-                                                tB.health -= (int)p.damage;
-                                                if (tB.health <= 0)
+                                                if (p.tileCollides)
+                                                    entity.Die(this);
+
+                                                if (t is TileBreakable)
                                                 {
-                                                    tiles[tB.position.x, tB.position.y] = tB.tileMadeWhenBroken;
+                                                    TileBreakable tB = (TileBreakable)t;
+
+                                                    tB.health -= (int)p.damage;
+                                                    if (tB.health <= 0)
+                                                    {
+                                                        tiles[tB.position.x, tB.position.y] = tB.tileMadeWhenBroken;
+                                                    }
                                                 }
                                             }
-                                        }
-                                        else if (entity is Player || entity is Enemy)
-                                        {
-                                            EntityLiving el = (EntityLiving)entity;
-                                            Rectangle hitbox = el.hitbox.ToRectangle();
-                                            Rectangle intersection = Rectangle.Intersect(t.bounds, hitbox);
-
-                                            Vector2 centerDistance = t.bounds.Center.ToVector2() - el.center;
-
-                                            if (intersection.Width > intersection.Height)
+                                            else if (entity is Player || entity is Enemy)
                                             {
-                                                if (centerDistance.Y > 0)
+                                                EntityLiving el = (EntityLiving)entity;
+                                                Rectangle hitbox = el.hitbox.ToRectangle();
+                                                Rectangle intersection = Rectangle.Intersect(t.bounds, hitbox);
+
+                                                Vector2 centerDistance = t.bounds.Center.ToVector2() - el.center;
+
+                                                if (intersection.Width > intersection.Height)
                                                 {
-                                                    if (!(GetTile(new Coordinate(t.position.x, t.position.y - 1)) is TileCollidable))
-                                                        el.Move(new Vector2(0, -intersection.Height));
+                                                    if (centerDistance.Y > 0)
+                                                    {
+                                                        if (!(GetTile(new Coordinate(t.position.x, t.position.y - 1)) is TileCollidable))
+                                                            el.Move(new Vector2(0, -intersection.Height));
+                                                    }
+                                                    if (centerDistance.Y < 0)
+                                                    {
+                                                        if (!(GetTile(new Coordinate(t.position.x, t.position.y + 1)) is TileCollidable))
+                                                            el.Move(new Vector2(0, intersection.Height));
+                                                    }
                                                 }
-                                                if (centerDistance.Y < 0)
+                                                else
                                                 {
-                                                    if (!(GetTile(new Coordinate(t.position.x, t.position.y + 1)) is TileCollidable))
-                                                        el.Move(new Vector2(0, intersection.Height));
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (centerDistance.X > 0)
-                                                {
-                                                    if (!(GetTile(new Coordinate(t.position.x - 1, t.position.y)) is TileCollidable))
-                                                        el.Move(new Vector2(-intersection.Width, 0));
-                                                }
-                                                if (centerDistance.X < 0)
-                                                {
-                                                    if (!(GetTile(new Coordinate(t.position.x + 1, t.position.y)) is TileCollidable))
-                                                        el.Move(new Vector2(intersection.Width, 0));
+                                                    if (centerDistance.X > 0)
+                                                    {
+                                                        if (!(GetTile(new Coordinate(t.position.x - 1, t.position.y)) is TileCollidable))
+                                                            el.Move(new Vector2(-intersection.Width, 0));
+                                                    }
+                                                    if (centerDistance.X < 0)
+                                                    {
+                                                        if (!(GetTile(new Coordinate(t.position.x + 1, t.position.y)) is TileCollidable))
+                                                            el.Move(new Vector2(intersection.Width, 0));
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                        if (entity.dead)
-                            entities.Remove(entity);
+                            if (entity.dead)
+                                entities.Remove(entity);
 
-                        if (entity.tType == EntityType.Projectile)
-                        {
-                            for (int i2 = projectiles.Count - 1; i2 >= 0; i2--)
+                            if (entity.tType == EntityType.Projectile)
                             {
-                                if (projectiles[i2].dead)
-                                    projectiles.RemoveAt(i2--);
-                            }
-                        }
-                        else if (entity.tType == EntityType.Enemy)
-                        {
-                            for (int i2 = enemies.Count - 1; i2 >= 0; i2--)
-                            {
-                                if (enemies[i2].dead)
-                                    enemies.RemoveAt(i2--);
-                            }
-                        }
-                        else if (entity.tType == EntityType.Bag)
-                        {
-                            for (int i2 = bags.Count - 1; i2 >= 0; i2--)
-                            {
-                                if (bags[i2].dead)
-                                    bags.RemoveAt(i2--);
-                            }
-                        }
-                        else if (entity.tType == EntityType.Particle)
-                        {
-                            for (int i2 = particles.Count - 1; i2 >= 0; i2--)
-                            {
-                                if (particles[i2].dead)
-                                    particles.RemoveAt(i2--);
-                            }
-                        }
-                    }
-
-                    //camera.Zoom = .8f;
-                    if (player.cameraIsOffset)
-                        player.cameraOffsetPos = Vector2.Transform(new Vector2(0, -128), Matrix.CreateRotationZ(-Main.camera.Rotation));
-                    else player.cameraOffsetPos = Vector2.Zero;
-                    camera.center = player.center + player.cameraOffsetPos;
-
-                    if (enemies.FindAll(x => x.active).Count < 16)
-                    {
-                        foreach (EnemySpawner spawner in spawners)
-                        {
-                            float distance = (player.position - spawner.position).Length();
-
-                            if (distance > 1024 && distance <= 1280)
-                            {
-                                if (Main.rand.Next(spawner.rate) == 0)
+                                for (int i2 = projectiles.Count - 1; i2 >= 0; i2--)
                                 {
-                                    spawner.SpawnEnemies(this);
-                                    //Console.WriteLine("spawned enemy at " + spawner.position);
+                                    if (projectiles[i2].dead)
+                                        projectiles.RemoveAt(i2--);
+                                }
+                            }
+                            else if (entity.tType == EntityType.Enemy)
+                            {
+                                for (int i2 = enemies.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (enemies[i2].dead)
+                                        enemies.RemoveAt(i2--);
+                                }
+                            }
+                            else if (entity.tType == EntityType.Bag)
+                            {
+                                for (int i2 = bags.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (bags[i2].dead)
+                                        bags.RemoveAt(i2--);
+                                }
+                            }
+                            else if (entity.tType == EntityType.Particle)
+                            {
+                                for (int i2 = particles.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (particles[i2].dead)
+                                        particles.RemoveAt(i2--);
+                                }
+                            }
+                        }
+
+                        //camera.Zoom = .8f;
+                        if (player.cameraIsOffset)
+                            player.cameraOffsetPos = Vector2.Transform(new Vector2(0, -128), Matrix.CreateRotationZ(-Main.camera.Rotation));
+                        else player.cameraOffsetPos = Vector2.Zero;
+
+                        Main.camera.worldCenter = player.center + player.cameraOffsetPos;
+
+                        if (enemies.FindAll(x => x.active).Count < 16)
+                        {
+                            foreach (EnemySpawner spawner in spawners)
+                            {
+                                float distance = (player.position - spawner.position).Length();
+
+                                if (distance > 1024 && distance <= 1280)
+                                {
+                                    if (Main.rand.Next(spawner.rate) == 0)
+                                    {
+                                        spawner.SpawnEnemies(this);
+                                        //Console.WriteLine("spawned enemy at " + spawner.position);
+                                    }
                                 }
                             }
                         }
@@ -317,129 +321,129 @@ namespace Limestone
                 }
             }
         }
-
         List<Vector2> points = new List<Vector2>();
-        public void Draw(Camera2D camera, SpriteBatch batch)
+        public void Draw(GameCamera camera, SpriteBatch batch)
         {
             if (doneGen)
             {
-                if (drawTiles.Count == 0)
-                    GetTilesToDraw(true);
-                else GetTilesToDraw();
-                foreach (Tile t in drawTiles)
+                if (!Main.camera.activeGui.stopsWorldDraw)
                 {
-                    if (t is TileWall)
+                    if (drawTiles.Count == 0)
+                        GetTilesToDraw(true);
+                    else GetTilesToDraw();
+                    foreach (Tile t in drawTiles)
                     {
-                        TileWall tw = (TileWall)t;
-                        if (!tw.setCardinals)
-                            tw.SetCardinalTiles(this);
-                    }
-
-                    t.Draw(batch);
-
-                    if (t is TileRock)
-                    {
-                        TileRock tC = (TileRock)t;
-                        tC.DrawBeneath(batch);
-                    }
-                }
-
-                foreach (Tile t in drawTiles)
-                {
-                    if (t is TileCollidable)
-                    {
-                        TileCollidable tC = (TileCollidable)t;
-                        tC.DrawOutline(batch);
-                    }
-                }
-
-                foreach (Entity e in entities)
-                {
-                    e.DrawOutline(batch);
-
-                    e.Draw(batch);
-                }
-
-                foreach (Tile t in drawTiles)
-                {
-                    if (t is TileCollidable)
-                    {
-                        TileCollidable tC = (TileCollidable)t;
-                        tC.Draw(batch);
-                    }
-                }
-
-                /*foreach (Enemy e in enemies)
-                {
-                    e.DrawHealthBar(batch);
-                }*/
-
-                foreach (EnemySpawner spawner in spawners)
-                    spawner.Draw(batch);
-
-                //player.DrawHealthBar(batch, minimap);
-
-                //DrawHelper.StartDrawCameraSpace(batch);
-
-                
-                //DrawHelper.StartDrawWorldSpace(batch);
-
-                camera.Draw(this, batch);
-
-                if (respawnTimer > 0)
-                    respawnTimer--;
-
-                if (player.dead && respawnTimer == -20)
-                    respawnTimer = 120;
-
-                if (respawnTimer <= 0 && respawnTimer > -20)
-                {
-                    Main.AwaitNextKeyPress();
-
-                    UnloadWorld();
-                    CreateWorld();
-                    respawnTimer = -20;
-                }
-
-                Vector2 prev = Vector2.Zero;
-                foreach (Vector2 p in points)
-                {
-                    if (prev != Vector2.Zero)
-                    {
-                        DrawGeometry.DrawLine(batch, prev, p, Microsoft.Xna.Framework.Color.White);
-                    }
-                    prev = p;
-                }
-
-                if (takeshot)
-                {
-                    if (minimap == null)
-                        minimap = new Texture2D(batch.GraphicsDevice, tiles.GetLength(0), tiles.GetLength(1));
-                    Color[] color2 = new Color[tiles.GetLength(0) * tiles.GetLength(1)];
-                    for (int x = 0; x < tiles.GetLength(0); x++)
-                    {
-                        for (int y = 0; y < tiles.GetLength(1); y++)
+                        if (t is TileWall)
                         {
-                            if (tiles[x, y] != null)
-                                color2[x + (y * tiles.GetLength(0))] = tiles[x, y].MinimapColor();
-                            else
-                                color2[x + (y * tiles.GetLength(0))] = Color.Black;
+                            TileWall tw = (TileWall)t;
+                            if (!tw.setCardinals)
+                                tw.SetCardinalTiles(this);
+                        }
+
+                        t.Draw(batch);
+
+                        if (t is TileRock)
+                        {
+                            TileRock tC = (TileRock)t;
+                            tC.DrawBeneath(batch);
                         }
                     }
-                    Coordinate playerPos = player.position.ToCoordinate();
-                    if ((playerPos.x < tiles.GetLength(0) && playerPos.y < tiles.GetLength(1)) && (playerPos.x >= 0 && playerPos.y >= 0))
-                        color2[playerPos.x + (playerPos.y * tiles.GetLength(0))] = Color.Red;
-                    minimap.SetData(color2);
 
-                    Stream stream = File.OpenWrite("test1.jpg");
-                    minimap.SaveAsPng(stream, tiles.GetLength(0), tiles.GetLength(1));
-                    stream.Close();
-                    takeshot = false;
+                    foreach (Tile t in drawTiles)
+                    {
+                        if (t is TileCollidable)
+                        {
+                            TileCollidable tC = (TileCollidable)t;
+                            tC.DrawOutline(batch);
+                        }
+                    }
+
+                    foreach (Entity e in entities)
+                    {
+                        e.DrawOutline(batch);
+
+                        e.Draw(batch);
+                    }
+
+                    foreach (Tile t in drawTiles)
+                    {
+                        if (t is TileCollidable)
+                        {
+                            TileCollidable tC = (TileCollidable)t;
+                            tC.Draw(batch);
+                        }
+                    }
+
+                    /*foreach (Enemy e in enemies)
+                    {
+                        e.DrawHealthBar(batch);
+                    }*/
+
+                    foreach (EnemySpawner spawner in spawners)
+                        spawner.Draw(batch);
+
+                    //player.DrawHealthBar(batch, minimap);
+
+                    //DrawHelper.StartDrawCameraSpace(batch);
+
+
+                    //DrawHelper.StartDrawWorldSpace(batch);
+
+                    if (respawnTimer > 0)
+                        respawnTimer--;
+
+                    if (player.dead && respawnTimer == -20)
+                        respawnTimer = 120;
+
+                    if (respawnTimer <= 0 && respawnTimer > -20)
+                    {
+                        Main.AwaitNextKeyPress();
+
+                        UnloadWorld();
+                        CreateWorld();
+                        respawnTimer = -20;
+                    }
+
+                    Vector2 prev = Vector2.Zero;
+                    foreach (Vector2 p in points)
+                    {
+                        if (prev != Vector2.Zero)
+                        {
+                            DrawGeometry.DrawLine(batch, prev, p, Microsoft.Xna.Framework.Color.White);
+                        }
+                        prev = p;
+                    }
+
+                    if (takeshot)
+                    {
+                        if (minimap == null)
+                            minimap = new Texture2D(batch.GraphicsDevice, tiles.GetLength(0), tiles.GetLength(1));
+                        Color[] color2 = new Color[tiles.GetLength(0) * tiles.GetLength(1)];
+                        for (int x = 0; x < tiles.GetLength(0); x++)
+                        {
+                            for (int y = 0; y < tiles.GetLength(1); y++)
+                            {
+                                if (tiles[x, y] != null)
+                                    color2[x + (y * tiles.GetLength(0))] = tiles[x, y].MinimapColor();
+                                else
+                                    color2[x + (y * tiles.GetLength(0))] = Color.Black;
+                            }
+                        }
+                        Coordinate playerPos = player.position.ToCoordinate();
+                        if ((playerPos.x < tiles.GetLength(0) && playerPos.y < tiles.GetLength(1)) && (playerPos.x >= 0 && playerPos.y >= 0))
+                            color2[playerPos.x + (playerPos.y * tiles.GetLength(0))] = Color.Red;
+                        minimap.SetData(color2);
+
+                        Stream stream = File.OpenWrite("test1.jpg");
+                        minimap.SaveAsPng(stream, tiles.GetLength(0), tiles.GetLength(1));
+                        stream.Close();
+                        takeshot = false;
+                    }
                 }
             }
             else
             {
-                batch.GraphicsDevice.Clear(Color.Black);
+                //batch.GraphicsDevice.Clear(Color.Black);
                 //batch.DrawString(Assets.GetFont("munro12"), WorldGenerator.worldGenText, Vector2.Zero, Color.White, 0, Vector2.Zero, 2, SpriteEffects.None, 0);
             }
         }
@@ -549,7 +553,7 @@ namespace Limestone
 
             if (player.moving || moveOverride)
             {
-                Coordinate start = Coordinate.VectorToCoord(Main.camera.center);
+                Coordinate start = Coordinate.VectorToCoord(Main.camera.worldCenter);
 
                 for (int x = -15; x < 16; x++)
                 {
@@ -617,7 +621,7 @@ namespace Limestone
 
         #region creation
         
-        public void CreateWorld()
+        public Thread CreateWorld()
         {
             tiles = new Tile[256, 256];
             gd = new DungeonGenerator(this, 1);
@@ -625,6 +629,7 @@ namespace Limestone
             //gd.Generate();
             worldGenThread = new Thread(gd.Generate);
             worldGenThread.Start();
+            return worldGenThread;
         }
 
         public Tile CreateTile(Tile tile)

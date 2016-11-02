@@ -570,7 +570,7 @@ namespace Limestone.Items
 
         public void ShootEleOrb(World world, Player player)
         {
-            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2()));
+            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2()));
             int randDamg = Main.rand.Next(damageMin, damageMax);
 
             for (int i = 0; i < projectiles.Count; i++)
@@ -592,7 +592,7 @@ namespace Limestone.Items
 
         public void ShootBow(World world, Player player)
         {
-            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2()));
+            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2()));
             int randDamg = Main.rand.Next(damageMin, damageMax);
             if (rarity < 10)
             {
@@ -615,7 +615,7 @@ namespace Limestone.Items
 
         public void ShootSword(World world, Player player)
         {
-            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2()));
+            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2()));
             int randDamg = Main.rand.Next(damageMin, damageMax);
             Projectile2 p = world.CreateProjectile(projectiles[0].Copy(player.center, angle));
             p.damage = (int)((randDamg + (int)(((randDamg * 1.2) / 75) * attack)) * player.damageMult);

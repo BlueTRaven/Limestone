@@ -18,6 +18,7 @@ using Limestone.Utility;
 using Limestone.Buffs;
 using Limestone.Tiles;
 using Limestone.Items;
+using Limestone.Inp;
 
 using Superbest_random;
 
@@ -228,7 +229,7 @@ namespace Limestone.Entities
 
             textureCoord.X = 0;
             textureSize = new Vector2(8);
-            bool leftPressed = Main.mouse.MouseKeyPressContinuous("left");
+            bool leftPressed = Main.mouse.MouseKeyPressContinuous(MouseButton.Left);
             Vector2 clickpoint = Main.mouse.position;
             if (new Rectangle(inventoryRect.X, inventoryRect.Y, inventoryRect.Width, 16).Contains(clickpoint) && leftPressed)
                 movingRect = true;
@@ -244,7 +245,7 @@ namespace Limestone.Entities
             if (health > maxHealth)
                 health = maxHealth;
 
-            bool keyW = Main.KeyPressContinuous(Keys.W), keyA = Main.KeyPressContinuous(Keys.A), keyS = Main.KeyPressContinuous(Keys.S), keyD = Main.KeyPressContinuous(Keys.D);
+            bool keyW = Main.keyboard.KeyPressedContinuous(Keys.W), keyA = Main.keyboard.KeyPressedContinuous(Keys.A), keyS = Main.keyboard.KeyPressedContinuous(Keys.S), keyD = Main.keyboard.KeyPressedContinuous(Keys.D);
             
             for (int i = buffs.Count - 1; i >= 0; i--)
             {
@@ -258,10 +259,10 @@ namespace Limestone.Entities
             speed = (maxSpeed + speed * (6f / 75f)) * speedMult;
             if (Main.isActive)
             {
-                if (Main.AnyTwoKeysPressedTogether(new Keys[] { Keys.W, Keys.A, Keys.S, Keys.D }))
+                if (Main.keyboard.KeysPressedTogether(new Keys[] { Keys.W, Keys.A, Keys.S, Keys.D }))
                     speed *= 0.75f;
 
-                if (Main.KeyPress(Keys.X))
+                if (Main.keyboard.KeyPressed(Keys.X))
                     cameraIsOffset = !cameraIsOffset;
 
                 if (keyD)
@@ -318,7 +319,7 @@ namespace Limestone.Entities
                     }
                 }
 
-                if (Main.KeyPress(Keys.Space))
+                if (Main.keyboard.KeyPressed(Keys.Space))
                 {
                     if (equipment[1].item != null)
                     {
@@ -330,7 +331,7 @@ namespace Limestone.Entities
                     manaWidth = 128 * manaP;
                 }
 
-                if (Main.mouse.MouseKeyPressContinuous("left") && !movingRect)
+                if (Main.mouse.MouseKeyPressContinuous(Inp.MouseButton.Left) && !movingRect)
                 {
                     float angle = VectorHelper.FindAngleBetweenTwoPoints(center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.position));
                     float angleRel = angle - MathHelper.ToDegrees(-Main.camera.Rotation);
@@ -384,29 +385,29 @@ namespace Limestone.Entities
                 else if (counter["shoot"] > 0)
                     textureCoord.X = 5;
 
-                if (Main.KeyPressContinuous(Keys.Q))
+                if (Main.keyboard.KeyPressedContinuous(Keys.Q))
                 {
                     Main.camera.AddRot(2.2f);
                     //Main.camera.Rotation += MathHelper.ToRadians(2.2f);
                 }
 
-                if (Main.KeyPressContinuous(Keys.E))
+                if (Main.keyboard.KeyPressedContinuous(Keys.E))
                 {
                     Main.camera.AddRot(-2.2f);
                     //Main.camera.Rotation -= MathHelper.ToRadians(2.2f);
                 }
 
-                if (Main.KeyPress(Keys.R))
+                if (Main.keyboard.KeyPressed(Keys.R))
                 {
                     Main.camera.Rotation = 0;
                 }
 
-                if (Main.KeyPress(Keys.T))
+                if (Main.keyboard.KeyPressed(Keys.T))
                 {
                     drawInventory = !drawInventory;
                 }
 
-                if (Main.KeyPress(Keys.I))
+                if (Main.keyboard.KeyPressed(Keys.I))
                     DEBUGINVENCIBLE = !DEBUGINVENCIBLE;
             }
             counter["shoot"]--;

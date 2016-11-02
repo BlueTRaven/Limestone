@@ -40,7 +40,16 @@
   <ItemGroup>
     <Compile Include="Biome.cs" />
     <Compile Include="Buffs\Buff.cs" />
-    <Compile Include="Camera2D.cs" />
+    <Compile Include="Guis\Gui.cs" />
+    <Compile Include="Guis\GuiLoading.cs" />
+    <Compile Include="Guis\GuiMainMenu.cs" />
+    <Compile Include="Guis\GuiNone.cs" />
+    <Compile Include="Guis\GuiOptions.cs" />
+    <Compile Include="Guis\GuiPauseMenu.cs" />
+    <Compile Include="Guis\Widgets\WidgetTextButton.cs" />
+    <Compile Include="Guis\Widgets\Widget.cs" />
+    <Compile Include="Guis\Widgets\WidgetButton.cs" />
+    <Compile Include="Inp\GameCamera.cs" />
     <Compile Include="Chatbox.cs" />
     <Compile Include="ClientSocket.cs" />
     <Compile Include="DrawGeometry.cs" />
@@ -61,7 +70,8 @@
     <Compile Include="Entities\FrameCollection.cs" />
     <Compile Include="Entities\Particle.cs" />
     <Compile Include="Entities\Projectile2.cs" />
-    <Compile Include="GameMouse.cs" />
+    <Compile Include="Inp\GameKeyboard.cs" />
+    <Compile Include="Inp\GameMouse.cs" />
     <Compile Include="Generation\Door.cs" />
     <Compile Include="Generation\DungeonGenerator.cs" />
     <Compile Include="Items\InventoryGui.cs" />
@@ -98,6 +108,7 @@
     <Compile Include="Utility\Assets.cs" />
     <Compile Include="Utility\DrawHelper.cs" />
     <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\TextHelper.cs" />
     <Compile Include="Utility\VectorHelper.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Generation\WorldGenerator.cs" />

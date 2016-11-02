@@ -196,7 +196,7 @@ namespace Limestone.Items
 
         private void AbilityIcicle(World world, Player player)
         {
-            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2()));
+            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2()));
             if (player.mana - cost >= 0)
             {
                 int r = Main.rand.Next(0, 2);
@@ -222,7 +222,7 @@ namespace Limestone.Items
 
         private void AbilityQuiver(World world, Player player)
         {
-            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2()));
+            float angle = VectorHelper.FindAngleBetweenTwoPoints(player.center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2()));
             if (player.mana - cost >= 0)
             {
                 for (int i = -5; i <= 5; i += 5)
@@ -238,7 +238,7 @@ namespace Limestone.Items
 
         private void AbilityTimePendant(World world, Player player)
         {
-            Vector2 mousepos = VectorHelper.ConvertScreenToWorldCoords(Main.mouse.state.Position.ToVector2());
+            Vector2 mousepos = VectorHelper.ConvertScreenToWorldCoords(Main.mouse.currentState.Position.ToVector2());
 
             if (player.mana - cost >= 0)
             {
