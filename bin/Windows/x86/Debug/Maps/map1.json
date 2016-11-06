@@ -1,0 +1,657 @@
+{
+  "bounds": {
+    "X": 0,
+    "Y": 0,
+    "Width": 3072,
+    "Height": 3072
+  },
+  "spawners": [],
+  "serTiles": [
+    {
+      "tileType": 0,
+      "realPosition": "192, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "192, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "240, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "288, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "wallTexInfo": {
+        "name": "tilesFull",
+        "texX": 5,
+        "texY": 0,
+        "texSize": 8
+      },
+      "tileType": 1,
+      "realPosition": "336, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 2,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "336, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "384, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "432, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "480, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 96",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 144",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 192",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 240",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 288",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 336",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 384",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    },
+    {
+      "tileType": 0,
+      "realPosition": "528, 432",
+      "textureInfo": {
+        "name": "tilesFull",
+        "texX": 0,
+        "texY": 0,
+        "texSize": 8
+      }
+    }
+  ]
+}

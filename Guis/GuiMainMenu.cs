@@ -27,27 +27,26 @@ namespace Limestone.Guis
 
         public override void Update(Main main)
         {
-            if (active)
+            foreach (Widget widget in widgets)
+                widget.Update();
+
+            if (((WidgetButton)widgets[0]).pressed)
             {
-                foreach (Widget widget in widgets)
-                    widget.Update();
+                //Main.hold = false;
 
-                if (((WidgetButton)widgets[0]).pressed)
-                {
-                    Main.hold = false;
+                //main.world = new World();
+                //Thread thread = main.world.CreateWorld();
 
-                    main.world = new World();
-                    Thread thread = main.world.CreateWorld();
+                //Main.camera.activeGui = new GuiLoading(thread);
 
-                    Main.camera.activeGui = new GuiLoading(thread);
+                Main.camera.activeGui = new GuiCharacterSelect(this);
 
-                    active = false;
-                }
+                active = false;
+            }
 
-                if (((WidgetButton)widgets[1]).pressed)
-                {
-                    Main.camera.activeGui = new GuiOptions(this);
-                }
+            if (((WidgetButton)widgets[1]).pressed)
+            {
+                Main.camera.activeGui = new GuiOptions(this);
             }
         }
 

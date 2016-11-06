@@ -15,7 +15,7 @@ namespace Limestone.Generation
 {
     public class DungeonGenerator
     {
-        int type;
+        /*int type;
 
         private World world;
         public Rectangle maxbounds;
@@ -32,10 +32,13 @@ namespace Limestone.Generation
 
         private List<TileWall> wallTiles = new List<TileWall>();
         private List<TileFloor> floorTiles = new List<TileFloor>();
-        public DungeonGenerator(World world, int type)
+
+        private Player createPlayer;
+        public DungeonGenerator(World world, int type, Player player)
         {
             this.world = world;
             this.type = type;
+            this.createPlayer = player;
 
             SetDefaults();
         }
@@ -75,7 +78,7 @@ namespace Limestone.Generation
                 floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
                 floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
                 floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple1", Biomes.AncientLands));
-                floorTiles.Add(TileFloor.Create(Coordinate.Zero, "purple2", Biomes.AncientLands));
+                floorTiles.Add((TileFloor)(TileFloor.Create(Coordinate.Zero, "purple2", Biomes.AncientLands).SetBillboarded(Assets.GetTexture("rocksMidlands1"), 4)));
 
                 wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
                 wallTiles.Add(TileWall.Create(Coordinate.Zero, "brickTop", "brick1", Biomes.Rock));
@@ -166,7 +169,7 @@ namespace Limestone.Generation
 
             GenerateRooms(world);
 
-            world.player = new Player(Vector2.Zero, Class.Archer);
+            world.player = createPlayer;
             world.entities.Add(world.player);
 
             world.player.position = start.bounds.ToCoordinateScale().Center.ToVector2();
@@ -284,7 +287,7 @@ namespace Limestone.Generation
                         }
                     }
 
-                    /*//Enemy shu = world.CreateEnemy(Enemy.Create(0, roomCenter - new Vector2(Coordinate.coordSize + 16), true));
+                    //Enemy shu = world.CreateEnemy(Enemy.Create(0, roomCenter - new Vector2(Coordinate.coordSize + 16), true));
                     //Enemy tefnut = world.CreateEnemy(Enemy.Create(1, roomCenter - new Vector2(Coordinate.coordSize + 16), true));
 
                     List<Enemy2> sarcs = new List<Enemy2>();
@@ -296,7 +299,7 @@ namespace Limestone.Generation
                         }
                     }
                     //shu.children.AddRange(sarcs);
-                    //tefnut.children.AddRange(sarcs);*/
+                    //tefnut.children.AddRange(sarcs);
                 }
 
                 if (r.isEndRoom)
@@ -355,6 +358,6 @@ namespace Limestone.Generation
         {
             rooms.Add(room);
             return room;
-        }
+        }*/
     }
 }

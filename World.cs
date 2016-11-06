@@ -17,6 +17,7 @@ using Limestone.Entities;
 using Limestone.Entities.Enemies;
 using Limestone.Items;
 using Limestone.Generation;
+using Limestone.Guis;
 
 namespace Limestone
 {
@@ -55,18 +56,19 @@ namespace Limestone
 
         private Texture2D minimap;
 
-        public Thread worldGenThread;
+        public Thread mapLoadThread;
         private bool doneGen = false;
 
         public World()
         {
             worldTimer = 0;
-            testEffect = Assets.GetEffect("test");
         }
 
         public void Update()
         {
-            if (!worldGenThread.IsAlive)
+            worldTimer++;
+
+            if (!mapLoadThread.IsAlive)
             {
                 if (!Main.camera.activeGui.stopsWorldInput)
                 {
@@ -80,17 +82,9 @@ namespace Limestone
                         return 0;
                     }).ToList();
 
-                    wallTiles = wallTiles.OrderBy(x =>
-                    {
-                        Vector2 yRot = Vector2.Transform(x.bounds.Center.ToVector2(), Matrix.CreateRotationZ(Main.camera.Rotation));
-                        return yRot.Y;
-                    }).ToList();
-
                     if (player.moving)
                     {
-                        List<Tile> nearTiles = new List<Tile>();
-
-                        nearTiles = GetNearTiles(player, 16);
+                        List<Tile> nearTiles = nearTiles = GetNearTiles(player, 16);
 
                         foreach (Tile t in nearTiles)
                         {
@@ -112,11 +106,11 @@ namespace Limestone
                         }
                         if (Main.keyboard.KeyPressed(Keys.Y))
                         {
-                            SaveHelper.Save(tiles, "tiles.json");
+                            SerializeHelper.Save(tiles, "tiles.json");
                         }
                         if (Main.keyboard.KeyPressed(Keys.H))
                         {
-                            Tile[,] loaded = SaveHelper.LoadTiles("tiles");
+                            Tile[,] loaded = SerializeHelper.LoadTiles("tiles");
                             tiles = loaded;
                             //Player p = SaveHelper.LoadPlayer("test2");
                             //entities[entities.IndexOf(player)] = p;
@@ -196,63 +190,12 @@ namespace Limestone
 
                                 foreach (Tile t in nearTiles)
                                 {
-                                    if (t is TileCollidable)
+                                    if (t.collidable)
                                     {
                                         if (entity.hitbox.Intersects(t.bounds))
                                         {
-                                            if (entity.tType == EntityType.Projectile)
-                                            {
-                                                Projectile2 p = (Projectile2)entity;
-
-                                                if (p.tileCollides)
-                                                    entity.Die(this);
-
-                                                if (t is TileBreakable)
-                                                {
-                                                    TileBreakable tB = (TileBreakable)t;
-
-                                                    tB.health -= (int)p.damage;
-                                                    if (tB.health <= 0)
-                                                    {
-                                                        tiles[tB.position.x, tB.position.y] = tB.tileMadeWhenBroken;
-                                                    }
-                                                }
-                                            }
-                                            else if (entity is Player || entity is Enemy)
-                                            {
-                                                EntityLiving el = (EntityLiving)entity;
-                                                Rectangle hitbox = el.hitbox.ToRectangle();
-                                                Rectangle intersection = Rectangle.Intersect(t.bounds, hitbox);
-
-                                                Vector2 centerDistance = t.bounds.Center.ToVector2() - el.center;
-
-                                                if (intersection.Width > intersection.Height)
-                                                {
-                                                    if (centerDistance.Y > 0)
-                                                    {
-                                                        if (!(GetTile(new Coordinate(t.position.x, t.position.y - 1)) is TileCollidable))
-                                                            el.Move(new Vector2(0, -intersection.Height));
-                                                    }
-                                                    if (centerDistance.Y < 0)
-                                                    {
-                                                        if (!(GetTile(new Coordinate(t.position.x, t.position.y + 1)) is TileCollidable))
-                                                            el.Move(new Vector2(0, intersection.Height));
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (centerDistance.X > 0)
-                                                    {
-                                                        if (!(GetTile(new Coordinate(t.position.x - 1, t.position.y)) is TileCollidable))
-                                                            el.Move(new Vector2(-intersection.Width, 0));
-                                                    }
-                                                    if (centerDistance.X < 0)
-                                                    {
-                                                        if (!(GetTile(new Coordinate(t.position.x + 1, t.position.y)) is TileCollidable))
-                                                            el.Move(new Vector2(intersection.Width, 0));
-                                                    }
-                                                }
-                                            }
+                                            TileCollidable tC = (TileCollidable)t;
+                                            tC.OnCollide(this, entity);
                                         }
                                     }
                                 }
@@ -321,6 +264,7 @@ namespace Limestone
                 }
             }
         }
+
         List<Vector2> points = new List<Vector2>();
         public void Draw(GameCamera camera, SpriteBatch batch)
         {
@@ -333,12 +277,8 @@ namespace Limestone
                     else GetTilesToDraw();
                     foreach (Tile t in drawTiles)
                     {
-                        if (t is TileWall)
-                        {
-                            TileWall tw = (TileWall)t;
-                            if (!tw.setCardinals)
-                                tw.SetCardinalTiles(this);
-                        }
+                        if (!t.setCardinals)
+                            t.SetCardinalTiles(this);
 
                         t.Draw(batch);
 
@@ -346,15 +286,6 @@ namespace Limestone
                         {
                             TileRock tC = (TileRock)t;
                             tC.DrawBeneath(batch);
-                        }
-                    }
-
-                    foreach (Tile t in drawTiles)
-                    {
-                        if (t is TileCollidable)
-                        {
-                            TileCollidable tC = (TileCollidable)t;
-                            tC.DrawOutline(batch);
                         }
                     }
 
@@ -367,9 +298,10 @@ namespace Limestone
 
                     foreach (Tile t in drawTiles)
                     {
-                        if (t is TileCollidable)
+                        if (t.collidable)
                         {
                             TileCollidable tC = (TileCollidable)t;
+                            tC.DrawOutline(batch);
                             tC.Draw(batch);
                         }
                     }
@@ -395,14 +327,14 @@ namespace Limestone
                     if (player.dead && respawnTimer == -20)
                         respawnTimer = 120;
 
-                    if (respawnTimer <= 0 && respawnTimer > -20)
+                    /*if (respawnTimer <= 0 && respawnTimer > -20)
                     {
                         Main.AwaitNextKeyPress();
 
                         UnloadWorld();
                         CreateWorld();
                         respawnTimer = -20;
-                    }
+                    }*/
 
                     Vector2 prev = Vector2.Zero;
                     foreach (Vector2 p in points)
@@ -606,8 +538,35 @@ namespace Limestone
         {
         }
 
-        public void LoadWorld(string loadFrom)
+        public void LoadWorld(Player player)
         {
+            GuiLoading.DEBUGLOADINGINFO = "Loading save file...";
+            PlayerSave save = SerializeHelper.LoadSave(@"Saves/save.json");
+
+            GuiLoading.DEBUGLOADINGINFO = "Loading world file: " + save.map;
+
+            if (!Directory.Exists("Maps"))
+                Directory.CreateDirectory("Maps");
+
+            SerWorld w = SerializeHelper.LoadWorld("Maps/" + save.map);
+
+            tiles = new Tile[w.bounds.Width / 48, w.bounds.Height / 48];
+
+            for (int i = 0; i < w.serTiles.Count; i++)
+            {
+                GuiLoading.DEBUGLOADINGINFO = "Adding tiles " + w.serTiles.Count + " to world...\n" + i + "/" + w.serTiles.Count;
+                Tile t = w.serTiles[i];
+
+                if (t != null)
+                {
+                    tiles[(int)(t.realPosition.X / 48), (int)(t.realPosition.Y / 48)] = t;
+                }
+            }
+
+            entities.AddRange(w.spawners);
+            spawners.AddRange(w.spawners);
+            this.player = player;
+            entities.Add(player);
         }
 
         public void UnloadWorld()
@@ -616,20 +575,27 @@ namespace Limestone
             enemies.Clear();
             projectiles.Clear();
             bags.Clear();
-            player = null;
+            //player = null;
         }
 
         #region creation
         
-        public Thread CreateWorld()
+        public Thread CreateWorld(Player player)
         {
             tiles = new Tile[256, 256];
-            gd = new DungeonGenerator(this, 1);
+            /*for (int i = 0; i < 256; i++)
+            {
+                for (int y = 0; i < 256; y++)
+                {
+
+                }
+            }*/
+            //gd = new DungeonGenerator(this, 1, player);
             //worldGen = new WorldGenerator(this, new Coordinate(64));
             //gd.Generate();
-            worldGenThread = new Thread(gd.Generate);
-            worldGenThread.Start();
-            return worldGenThread;
+            //mapLoadThread = new Thread(gd.Generate);
+            //mapLoadThread.Start();
+            return mapLoadThread;
         }
 
         public Tile CreateTile(Tile tile)

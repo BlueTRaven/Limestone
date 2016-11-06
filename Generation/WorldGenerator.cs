@@ -63,7 +63,7 @@ namespace Limestone.Generation
     public delegate Tile[,] GeneratorFunction(Tile[,] tiles);
     public class WorldGenerator
     {
-        public static volatile string worldGenText = "NULL";
+        /*public static volatile string worldGenText = "NULL";
 
         private List<VoroniPoly> polys = new List<VoroniPoly>();
         private VoroniPoly centerPoly;
@@ -152,7 +152,7 @@ namespace Limestone.Generation
 
                             done.Add(poly);
                             done.Add(polyo);
-                        }*/
+                        }
                     }
                 }
             }
@@ -217,7 +217,7 @@ namespace Limestone.Generation
                                 }
                             }
                         }
-                    }*/
+                    }
                 }
             }
         }
@@ -359,7 +359,7 @@ namespace Limestone.Generation
                 }
             }
             //world.spawnLocation = Coordinate.Zero;
-            world.player = new Player(new Vector2(128, 128)/*world.spawnLocation.ToVector2()*/, Class.Archer);
+            world.player = new Player(new Vector2(128, 128)/*world.spawnLocation.ToVector2(), Class.Archer);
             world.entities.Add(world.player);
         }
         public static List<Tile> GenerateRock(Tile[,] tiles, int genCount, Tile tile)
@@ -777,7 +777,7 @@ namespace Limestone.Generation
                 found3 = false;
             }
             return overlaps;
-        }
+        }*/
     }
-    #endregion
+    //#endregion
 }

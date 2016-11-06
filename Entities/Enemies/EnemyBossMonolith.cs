@@ -361,5 +361,10 @@ namespace Limestone.Entities.Enemies
             }
             prevhp = health;
         }
+
+        public override Enemy Copy()
+        {
+            return new EnemyBossMonolith(position);
+        }
     }
 }

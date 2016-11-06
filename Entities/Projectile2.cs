@@ -54,8 +54,9 @@ namespace Limestone.Entities
         public List<Entity> hitEntities = new List<Entity>(); 
         public Projectile2(Texture2D texture, Color color, float scale, Vector2 position, Vector2 offset, Vector2 size, float angle, float angleoffset, float speed, float distance, float damage)
         {
-            this.speed = speed;
             this.tType = EntityType.Projectile;
+
+            this.speed = speed;
             this.texture = texture;
             this.color = color;
             this.scale = scale;

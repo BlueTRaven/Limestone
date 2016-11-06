@@ -68,6 +68,7 @@ namespace Limestone.Entities
 
         public List<Enemy> children = new List<Enemy>();
         public Enemy parent;
+
         public Enemy() : base()
         {
             tType = EntityType.Enemy;
@@ -78,6 +79,8 @@ namespace Limestone.Entities
             shadowTextureColor = new Color(0, 0, 0, 127);
             baseColor = Color.White;
         }
+
+        public abstract Enemy Copy();
 
         public override void Update(World world)
         {

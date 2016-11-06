@@ -96,27 +96,25 @@ namespace Limestone.Tiles
     public enum TileType
     {
         Wall,
-        Floor
+        Floor,
+        None = -1
     }
-    [JsonObject(MemberSerialization.OptIn)]
+
     public abstract class Tile
     {
-        [JsonProperty]
         private Coordinate _position;
         public Coordinate position { get { return _position; } set { _position = value; bounds = new Rectangle(value.ToPoint(), new Point(Coordinate.coordSize)); } }
+        public Vector2 realPosition;
+
         public Rectangle bounds;
         public int rotation;
-
-        [JsonProperty]
-        public Biomes location;
-
-        [JsonProperty]
-        protected string textureName;
-        protected string wallTextureName;
+        
         public Texture2D texture;
         public Color color;
 
         public bool border;
+
+        protected Color miniMapColor;
 
         [JsonProperty]
         public bool revealed = false;
@@ -124,6 +122,40 @@ namespace Limestone.Tiles
 
         [JsonProperty]
         public TileType tileType;
+        public bool collidable = false;    //readonly - is only set in the TileCollidable constructor.
+
+        public Tile[] adjacentTiles;
+        public bool setCardinals = false;
+
+        public Tile adjacentTileLeft { get { return adjacentTiles[0]; } set { } }
+        public Tile adjacentTileDown { get { return adjacentTiles[1]; } set { } }
+        public Tile adjacentTileRight { get { return adjacentTiles[2]; } set { } }
+        public Tile adjacentTileUp { get { return adjacentTiles[3]; } set { } }
+
+        [JsonConstructor]
+        public Tile(Vector2 realPosition)
+        {
+            this.position = realPosition.ToCoordinate();
+        }
+
+        public Tile(Coordinate position)
+        {
+            this.position = position;
+        }
+
+        protected TextureInfo texInfo;
+
+        protected bool billboarded;
+        protected Texture2D billboardTexture;
+        protected float billboardScale;
+        public Tile SetBillboarded(Texture2D billboardTexture, float scale)
+        {
+            billboarded = true;
+            this.billboardTexture = billboardTexture;
+            this.billboardScale = scale;
+            return this;
+        }
+
         public void OnReveal(World world)
         {
             if (canCreateRandomSpawner)
@@ -139,32 +171,28 @@ namespace Limestone.Tiles
         }
         public abstract void Draw(SpriteBatch batch);
         public abstract Tile Copy(Coordinate position);
+
+        public void SetCardinalTiles(World world)
+        {
+            adjacentTiles = new Tile[4];
+            Coordinate c1 = new Coordinate(-1, 0);
+            Coordinate c2 = new Coordinate(0, 1);
+            Coordinate c3 = new Coordinate(1, 0);
+            Coordinate c4 = new Coordinate(0, -1);
+            if (world.GetTile(position + c1) != null)   //left
+                adjacentTiles[0] = world.GetTile(position + c1);
+            if (world.GetTile(position + c2) != null)   //down
+                adjacentTiles[1] = world.GetTile(position + c2);
+            if (world.GetTile(position + c3) != null)   //right
+                adjacentTiles[2] = world.GetTile(position + c3);
+            if (world.GetTile(position + c4) != null)   //up
+                adjacentTiles[3] = world.GetTile(position + c4);
+            setCardinals = true;
+        }
+
         public Color MinimapColor()
         {
-            //if (!revealed)
-                //return Color.Black;
-            switch (location)
-            {
-                case Biomes.Beach:
-                    return Color.SandyBrown;
-                case Biomes.LowLands:
-                    return Color.GreenYellow;
-                case Biomes.MidLands:
-                    return Color.Green;
-                case Biomes.HighLands:
-                    return Color.DarkGreen;
-                case Biomes.AncientLands:
-                    return Color.DarkSlateBlue;
-                case Biomes.Sea:
-                    return Color.CornflowerBlue;
-                default:
-                    return Color.Pink;
-            }
-            /*Color[] pixelcolor = new Color[1];
-            Rectangle middle = new Rectangle(24, 24, 1, 1);
-            texture.GetData<Color>(0, middle, pixelcolor, 0, 1);
-
-            return pixelcolor[0];*/
+            return miniMapColor;
         }
 
         protected void RandomRot()

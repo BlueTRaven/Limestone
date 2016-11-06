@@ -191,31 +191,34 @@ namespace Limestone
             DrawHelper.StartDrawCameraSpace(batch);
             if (!Main.hold && main.world != null)
             {
-                if (!main.world.worldGenThread.IsAlive)
+                if (!main.world.mapLoadThread.IsAlive)
                 {
-                    if (!activeGui.stopsWorldDraw)
+                    if (main.world.player != null)
                     {
-                        main.world.player.DrawHealthBar(batch);
-
-                        if (main.world.player.drawInventory)
-                            main.world.player.DrawItemsContents(batch);
-                        foreach (Bag b in main.world.bags)
+                        if (!activeGui.stopsWorldDraw)
                         {
+                            main.world.player.DrawHealthBar(batch);
+
                             if (main.world.player.drawInventory)
+                                main.world.player.DrawItemsContents(batch);
+                            foreach (Bag b in main.world.bags)
                             {
-                                if (b.hitbox.Intersects(main.world.player.hitbox))
-                                    b.DrawBagContents(batch, main.world.player.inventoryRect);
+                                if (main.world.player.drawInventory)
+                                {
+                                    if (b.hitbox.Intersects(main.world.player.hitbox))
+                                        b.DrawBagContents(batch, main.world.player.inventoryRect);
+                                }
                             }
-                        }
 
-                        if (main.world.player.dead)
-                        {
-                            batch.GraphicsDevice.Clear(Color.Black);
+                            if (main.world.player.dead)
+                            {
+                                batch.GraphicsDevice.Clear(Color.Black);
 
-                            SpriteFont font = Assets.GetFont("bitfontMunro12");
-                            string text = "YOU HAVE DIED!";
-                            Vector2 textSize = font.MeasureString(text);
-                            batch.DrawString(Assets.GetFont("bitfontMunro12"), text, worldCenter - textSize / 2, Color.White);
+                                SpriteFont font = Assets.GetFont("bitfontMunro12");
+                                string text = "YOU HAVE DIED!";
+                                Vector2 textSize = font.MeasureString(text);
+                                batch.DrawString(Assets.GetFont("bitfontMunro12"), text, worldCenter - textSize / 2, Color.White);
+                            }
                         }
                     }
                 }

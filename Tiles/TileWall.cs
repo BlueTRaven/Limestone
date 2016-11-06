@@ -15,47 +15,84 @@ namespace Limestone.Tiles
     [JsonObject(MemberSerialization.OptIn)]
     public class TileWall : TileCollidable
     {
-        Tile[] cardinalTiles;
-        public bool setCardinals = false;
-
+        private TextureInfo wallInfo;
         private Texture2D wallTexture;
 
-        public TileWall(Coordinate position, string textureName, string wallTextureName, Biomes biome, bool drawOutline = true, bool canCreateRandomSpawner = true)
+        /// <summary>
+        /// This constructor is for use for world loading only. DO NOT USE.
+        /// </summary>
+        [JsonConstructor]
+        public TileWall(TextureInfo wallTexInfo, TileType tileType, Vector2 realPosition, TextureInfo textureInfo) : base(realPosition)
+        {
+            this.wallInfo = wallTexInfo;
+            this.tileType = tileType;
+            this.realPosition = realPosition;
+            this.texInfo = textureInfo;
+
+            this.texture = Assets.GetTexFromSource(textureInfo.name, textureInfo.texX, textureInfo.texY);
+            this.wallTexture = Assets.GetTexFromSource(wallTexInfo.name, wallTexInfo.texX, wallTexInfo.texY);
+        }
+
+        public TileWall(Coordinate position, TextureInfo topInfo, TextureInfo wallInfo, bool drawOutline = true) : base(position)
         {
             tileType = TileType.Wall;
-            this.position = position;
-            bounds = new Rectangle(position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
+            //bounds = new Rectangle(position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
 
-            this.textureName = textureName;
-            this.wallTextureName = wallTextureName;
-            this.texture = Assets.GetTexture(textureName);
-            this.wallTexture = Assets.GetTexture(wallTextureName);
+            this.texInfo = topInfo;
+            this.texture = Assets.GetTexFromSource(topInfo.name, topInfo.texX, topInfo.texY);
 
-            this.location = biome;
+            this.wallInfo = wallInfo;
+            this.wallTexture = Assets.GetTexFromSource(wallInfo.name, wallInfo.texX, wallInfo.texY);
+
             this.drawOutline = drawOutline;
-            this.canCreateRandomSpawner = canCreateRandomSpawner;
         }
 
-        public void SetCardinalTiles(World world)
+        public override void OnCollide(World world, Entity entity)
         {
-            cardinalTiles = new Tile[4];
-            Coordinate c1 = new Coordinate(-1, 0);
-            Coordinate c2 = new Coordinate(0, 1);
-            Coordinate c3 = new Coordinate(1, 0);
-            Coordinate c4 = new Coordinate(0, -1);
-            if (world.GetTile(position + c1) != null)
-                cardinalTiles[0] = world.GetTile(position + c1);
-            if (world.GetTile(position + c2) != null)
-                cardinalTiles[1] = world.GetTile(position + c2);
-            if (world.GetTile(position + c3) != null)
-                cardinalTiles[2] = world.GetTile(position + c3);
-            if (world.GetTile(position + c4) != null)
-                cardinalTiles[3] = world.GetTile(position + c4);
-            setCardinals = true;
-        }
+            if (adjacentTiles == null)
+                SetCardinalTiles(world);
+            if (entity.tType == EntityType.Projectile)
+            {
+                Projectile2 p = (Projectile2)entity;
 
-        public override void OnCollide(Entity entity)
-        {
+                if (p.tileCollides)
+                    p.Die(world);
+            }
+            else if (entity.tType == EntityType.Player || entity.tType == EntityType.Enemy)
+            {
+                EntityLiving el = (EntityLiving)entity;
+                Rectangle hitbox = el.hitbox.ToRectangle();
+                Rectangle intersection = Rectangle.Intersect(bounds, hitbox);
+
+                Vector2 centerDistance = bounds.Center.ToVector2() - el.center;
+
+                if (intersection.Width > intersection.Height)
+                {
+                    if (centerDistance.Y > 0)
+                    {
+                        if (adjacentTileUp != null &&!adjacentTileUp.collidable)
+                            el.Move(new Vector2(0, -intersection.Height - 1));
+                    }
+                    if (centerDistance.Y < 0)
+                    {
+                        if (adjacentTileDown != null && !adjacentTileDown.collidable)
+                            el.Move(new Vector2(0, intersection.Height + 1));
+                    }
+                }
+                else
+                {
+                    if (centerDistance.X > 0)
+                    {
+                        if (adjacentTileLeft != null && !adjacentTileLeft.collidable)
+                            el.Move(new Vector2(-intersection.Width, 0));
+                    }
+                    if (centerDistance.X < 0)
+                    {
+                        if (adjacentTileRight != null && !adjacentTileRight.collidable)
+                            el.Move(new Vector2(intersection.Width, 0));
+                    }
+                }
+            }
         }
 
         public override void DrawOutline(SpriteBatch batch)
@@ -64,31 +101,24 @@ namespace Limestone.Tiles
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (cardinalTiles[3] != null && !(cardinalTiles[3] is TileWall))
+                    if (adjacentTiles[3] != null && !(adjacentTiles[3] is TileWall))
                         batch.Draw(wallTexture, bounds.Center.ToVector2() + Main.camera.up * i, new Rectangle(0, i / 4, 8, 1), Color.White, MathHelper.ToRadians(0), DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
-                    if (cardinalTiles[2] != null && !(cardinalTiles[2] is TileWall))
+                    if (adjacentTiles[2] != null && !(adjacentTiles[2] is TileWall))
                         batch.Draw(wallTexture, bounds.Center.ToVector2() + Main.camera.up * i, new Rectangle(0, i / 4, 8, 1), Color.White, MathHelper.ToRadians(90), DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
-                    if (cardinalTiles[1] != null && !(cardinalTiles[1] is TileWall))
+                    if (adjacentTiles[1] != null && !(adjacentTiles[1] is TileWall))
                         batch.Draw(wallTexture, bounds.Center.ToVector2() + Main.camera.up * i, new Rectangle(0, i / 4, 8, 1), Color.White, MathHelper.ToRadians(180), DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
-                    if (cardinalTiles[0] != null && !(cardinalTiles[0] is TileWall))
+                    if (adjacentTiles[0] != null && !(adjacentTiles[0] is TileWall))
                         batch.Draw(wallTexture, bounds.Center.ToVector2() + Main.camera.up * i, new Rectangle(0, i / 4, 8, 1), Color.White, MathHelper.ToRadians(270), DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
                 }
             }
-                //batch.Draw(Assets.GetTexture("test"), bounds.Center.ToVector2() + Main.camera.up * (i - 1), new Rectangle(i * 8, 0, 8, 8), Color.White, 0, DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
         }
 
         public override void Draw(SpriteBatch batch)
         {
-            
             batch.Draw(texture, bounds.Center.ToVector2() + Main.camera.up * 32, null, Color.White, 0, DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
         }
 
         #region creation
-        public static TileWall Create(Coordinate position, string texture, string wallTexture, Biomes biome, bool billboarded = false, bool drawoutline = true, bool beneathtexture = false)
-        {
-            TileWall tW = new TileWall(position, texture, wallTexture, biome, drawoutline);
-            return tW;
-        }
 
         /// <summary>
         /// Copies a tile to a position.
@@ -97,7 +127,7 @@ namespace Limestone.Tiles
         /// <returns>A new instance of an identecal tile.</returns>
         public override Tile Copy(Coordinate position)
         {
-            TileWall copy = new TileWall(position, textureName, wallTextureName, location, drawOutline);
+            TileWall copy = new TileWall(position, texInfo, wallInfo, drawOutline);
             copy.canCreateRandomSpawner = canCreateRandomSpawner;
             //copy.position = position;
             //copy.bounds = new Rectangle(new Point(position.x * Coordinate.coordSize, position.y * Coordinate.coordSize), new Point(Coordinate.coordSize, Coordinate.coordSize));

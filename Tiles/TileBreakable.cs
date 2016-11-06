@@ -15,7 +15,7 @@ namespace Limestone.Tiles
         public Tile tileMadeWhenBroken;
 
         public int health;
-        public TileBreakable(Coordinate position, TileBreakable copy)
+        public TileBreakable(Coordinate position, TileBreakable copy) : base(position)
         {
             this.position = position;
 
@@ -25,7 +25,7 @@ namespace Limestone.Tiles
             this.health = copy.health;
         }
 
-        public TileBreakable(Coordinate position, Texture2D texture, Tile tileMadeWhenBroken, int hp)
+        public TileBreakable(Coordinate position, Texture2D texture, Tile tileMadeWhenBroken, int hp) : base(position)
         {
             this.position = position;
             bounds = new Rectangle(new Point(position.x * Coordinate.coordSize, position.y * Coordinate.coordSize), new Point(Coordinate.coordSize, Coordinate.coordSize));
@@ -41,7 +41,7 @@ namespace Limestone.Tiles
 
         }
 
-        public override void OnCollide(Entity entity)
+        public override void OnCollide(World world, Entity entity)
         {
         }
 
@@ -57,12 +57,6 @@ namespace Limestone.Tiles
         }
 
         #region creation
-        public static Tile Create(Coordinate position, Texture2D texture, Tile tileMadeWhenBroken, int health, Biomes biome)
-        {
-            TileBreakable tB = new TileBreakable(position, texture, tileMadeWhenBroken, health);
-            tB.location = biome;
-            return tB;
-        }
 
         public override Tile Copy(Coordinate position)
         {

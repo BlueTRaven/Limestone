@@ -70,6 +70,7 @@ namespace Limestone
         public static GameKeyboard keyboard;
         public static Random rand;
         public static Chatbox cbox;
+        public static PlayerSave playersave;
         public static readonly int WIDTH = 800, HEIGHT = 600;
         public static bool isActive = true;
 
@@ -116,7 +117,6 @@ namespace Limestone
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Assets.Load(GraphicsDevice, Content);
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -148,6 +148,8 @@ namespace Limestone
 
             if (Main.keyboard.KeyPressed(Keys.P))
                 paused = !paused;
+
+            //if (keyboard.KeyPressed(Keys.Y))
 
             if (!hold)
             {

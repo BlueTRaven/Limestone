@@ -86,6 +86,8 @@ namespace Limestone.Entities
 
         public SoundEffect shootSound;
 
+        public string map = "none";
+
         public bool DEBUGINVENCIBLE = false;
         public Player(Vector2 position, Class cClass)
         {

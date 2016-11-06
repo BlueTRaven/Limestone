@@ -130,5 +130,10 @@ namespace Limestone.Entities.Enemies
                 shot1 = Main.rand.Next(low ? 240 : 300,  low ? 330 : 420);
             }
         }
+
+        public override Enemy Copy()
+        {
+            return new EnemyShadeEye(position, rotating, angle);
+        }
     }
 }

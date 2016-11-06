@@ -16,8 +16,10 @@ namespace Limestone.Guis
 {
     public class GuiLoading : Gui
     {
+        internal static bool DEBUGDRAWLOADINFO = false;
+        internal volatile static string DEBUGLOADINGINFO = "none";
         Thread loadingThread;
-        private float graphicRot = 0;
+        private float outerRot, midRot, inRot;
         public GuiLoading(Thread thread)
         {
             loadingThread = thread;
@@ -42,10 +44,14 @@ namespace Limestone.Guis
 
             foreach (Widget widget in widgets)
                 widget.Draw(batch);
-            graphicRot += .05f;
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, graphicRot, new Vector2(64, 64), 1f, SpriteEffects.None, 0);
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, graphicRot + 90, new Vector2(64, 64), .5f, SpriteEffects.None, 0);
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, graphicRot + 135, new Vector2(64, 64), .25f, SpriteEffects.None, 0);
+
+            batch.DrawString(Assets.GetFont("bitfontMunro12"), DEBUGLOADINGINFO, new Vector2(Main.camera.center.X, 0), Color.White);
+            outerRot += .05f;
+            midRot -= .025f;
+            inRot += 0.0125f;
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, outerRot, new Vector2(64, 64), 1f, SpriteEffects.None, 0);
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, midRot, new Vector2(64, 64), .5f, SpriteEffects.None, 0);
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, inRot, new Vector2(64, 64), .25f, SpriteEffects.None, 0);
         }
     }
 }

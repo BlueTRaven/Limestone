@@ -33,12 +33,16 @@ namespace Limestone.Guis.Widgets
         private Color textColor;
 
         public WidgetButtonState state;
+        public WidgetButtonState forceState;
+        public bool stateForce;
 
         public bool unpressed { get { return state == WidgetButtonState.Unpressed; } set { } }
         public bool hovered { get { return state == WidgetButtonState.Hovered; } set { } }
         public bool pressed { get { return state == WidgetButtonState.Pressed; } set { } }
 
-        public WidgetButton(Rectangle bounds) : base(bounds) { }
+        private Texture2D texture;
+        private float scale;
+        public WidgetButton(Rectangle bounds, Texture2D texture, float scale) : base(bounds) { this.texture = texture; this.scale = scale; }
 
         public WidgetButton SetBackgroundColor(Color unpressedColor, Color hoveredColor, Color pressedColor)
         {
@@ -46,6 +50,13 @@ namespace Limestone.Guis.Widgets
             this.unpressedColor = unpressedColor;
             this.hoveredColor = hoveredColor;
             this.pressedColor = pressedColor;
+            return this;
+        }
+
+        public WidgetButton SetForceState(WidgetButtonState state)
+        {
+            stateForce = true;
+            forceState = state;
             return this;
         }
 
@@ -65,17 +76,21 @@ namespace Limestone.Guis.Widgets
             if (bounds.Contains(Main.mouse.position))
             {
                 if (Main.mouse.MouseKeyPress(Inp.MouseButton.Left))
+                {
                     state = WidgetButtonState.Pressed;
+                    Assets.GetSoundEffect("buttonclick").Play();
+                }
                 else
                     state = WidgetButtonState.Hovered;
             }
+
+            if (stateForce)
+                state = forceState;
         }
 
         public override void Draw(SpriteBatch batch)
         {
-            if (!hasBackgroundColor)
-                DrawGeometry.DrawRectangle(batch, bounds, Color.Orange);
-            else
+            if (hasBackgroundColor)
             {
                 if (state == WidgetButtonState.Unpressed)
                     DrawGeometry.DrawRectangle(batch, bounds, unpressedColor);
@@ -84,6 +99,9 @@ namespace Limestone.Guis.Widgets
                 else if (state == WidgetButtonState.Pressed)
                     DrawGeometry.DrawRectangle(batch, bounds, pressedColor);
             }
+
+            if (texture != null)
+                batch.Draw(texture, bounds.Location.ToVector2(), null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
 
             if (hasText)
             {

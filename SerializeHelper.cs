@@ -20,7 +20,7 @@ using Limestone.Generation;
 
 namespace Limestone
 {
-    public static class SaveHelper
+    public static class SerializeHelper
     {
         public class ItemConverter : JsonConverter
         {
@@ -61,25 +61,21 @@ namespace Limestone
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                if (reader.Value != null)
-                {
-                    JObject item = JObject.Load(reader);
+                JObject item = JObject.Load(reader);
 
-                    if (item["tileType"].Value<TileType>() == TileType.Floor)
-                    {
-                        return item.ToObject<TileFloor>();
-                    }
-                    else if (item["tileType"].Value<TileType>() == TileType.Wall)
-                    {
-                        return item.ToObject<TileWall>();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Did not have a correct tile type!\nType: " + item["tileType"].Value<TileType>() + "\n Falling back to TileFloor!");
-                        return item.ToObject<TileFloor>();
-                    }
+                if (item["tileType"].Value<int>() == 0)
+                {
+                    return item.ToObject<TileFloor>();
                 }
-                return null;
+                else if (item["tileType"].Value<int>() == 1)
+                {
+                    return item.ToObject<TileWall>();
+                }
+                else
+                {
+                    Console.WriteLine("Did not have a correct tile type!\nType: " + item["tileType"].Value<int>() + "\n Falling back to TileEmpty!");
+                    return item.ToObject<TileEmpty>();
+                }
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -94,7 +90,7 @@ namespace Limestone
             serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             serializer.Formatting = Formatting.Indented;
 
-            using (StreamWriter sw = new StreamWriter(@"" + saveName))
+            using (StreamWriter sw = new StreamWriter(saveName))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, obj);
@@ -113,12 +109,47 @@ namespace Limestone
             }
         }
 
+        public static PlayerSave LoadSave(string savename)
+        {
+            PlayerSave save = null;
+            try
+            {
+                using (StreamReader sr = new StreamReader(savename))
+                {
+                    string content = sr.ReadToEnd();
+                    save = JsonConvert.DeserializeObject<PlayerSave>(content);
+
+                    Console.WriteLine("Loading save " + savename + "... \nLocation is: " + save.map);
+                }
+            }
+            catch
+            {
+                Console.WriteLine("There was no player save that could be loaded! Creating new save...");
+                save = new PlayerSave();
+
+                if (!Directory.Exists("Saves"))
+                    Directory.CreateDirectory("Saves");
+                Save(save, savename);
+            }
+            return save;
+        }
+
         public static Tile[,] LoadTiles(string fileName)
         {
             using (StreamReader sr = new StreamReader(fileName + ".json"))
             {
                 string content = sr.ReadToEnd();
                 Tile[,] obj = JsonConvert.DeserializeObject<Tile[,]>(content, new TileConverter());
+                return obj;
+            }
+        }
+
+        public static SerWorld LoadWorld(string fileName)
+        {
+            using (StreamReader sr = new StreamReader(fileName + ".json"))
+            {
+                string content = sr.ReadToEnd();
+                SerWorld obj = JsonConvert.DeserializeObject<SerWorld>(content, new TileConverter());
                 return obj;
             }
         }

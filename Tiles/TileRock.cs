@@ -13,14 +13,13 @@ namespace Limestone.Tiles
     public class TileRock : TileCollidable
     {
         protected Texture2D floorTex;
-        public TileRock(Coordinate location, Texture2D rockTex, Texture2D floorTex, Biomes biome)
+        public TileRock(Coordinate position, Texture2D rockTex, Texture2D floorTex) : base(position)
         {
-            position = location;
-            bounds = new Rectangle(position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
+            base.position = position;
+            bounds = new Rectangle(base.position.ToPoint(), new Point(Coordinate.coordSize, Coordinate.coordSize));
             texture = rockTex;
             this.floorTex = floorTex;
 
-            this.location = biome;
         }
         public override void Draw(SpriteBatch batch)
         {
@@ -37,13 +36,8 @@ namespace Limestone.Tiles
             batch.Draw(floorTex, bounds, Color.White);
         }
 
-        public override void OnCollide(Entity entity)
+        public override void OnCollide(World world, Entity entity)
         {
-        }
-
-        public static TileRock Create(Coordinate location, Texture2D rockTex, Texture2D floorTex, Biomes biome)
-        {
-            return new TileRock(location, rockTex, floorTex, biome);
         }
 
         /// <summary>
@@ -53,7 +47,7 @@ namespace Limestone.Tiles
         /// <returns>A new instance of an identecal tile.</returns>
         public override Tile Copy(Coordinate position)
         {
-            TileRock copy = new TileRock(position, texture, floorTex, location);
+            TileRock copy = new TileRock(position, texture, floorTex);
             return copy;
         }
     }

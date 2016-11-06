@@ -88,6 +88,7 @@ namespace Limestone.Utility
             //Gui
             textures.Add("guiItemslot", content.Load<Texture2D>("Textures/GuiItemslot"));
             textures.Add("loading", content.Load<Texture2D>("Textures/loading"));
+            textures.Add("guiChars", content.Load<Texture2D>("Textures/Guis/guiChars"));
             //Enemies
             textures.Add("char1", content.Load<Texture2D>("Textures/char1"));
             textures.Add("char2", content.Load<Texture2D>("Textures/char2"));
@@ -175,6 +176,9 @@ namespace Limestone.Utility
             textures.Add("purple0", content.Load<Texture2D>("Textures/Tiles/purple0"));
             textures.Add("purple1", content.Load<Texture2D>("Textures/Tiles/purple1"));
             textures.Add("purple2", content.Load<Texture2D>("Textures/Tiles/purple2"));
+
+            textures.Add("tilesFull", content.Load<Texture2D>("Textures/Tiles/tilesFull"));
+            textures.Add("bbTilesFull", content.Load<Texture2D>("Textures/Tiles/bbTilesFull"));
             //Items
             //Swords
             textures.Add("testItem1", content.Load<Texture2D>("Textures/Items/Weapons/testItem1"));
@@ -231,6 +235,7 @@ namespace Limestone.Utility
 
             shaders.Add("test", content.Load<Effect>("Effects/sharpen"));
 
+            soundEffects.Add("buttonclick", content.Load<SoundEffect>("Sounds/Generic/buttonclick"));
             soundEffects.Add("error", content.Load<SoundEffect>("Sounds/Generic/error"));
             soundEffects.Add("genericImpact1", content.Load<SoundEffect>("Sounds/Hit/genericImpact1"));
             soundEffects.Add("spriteImpact1", content.Load<SoundEffect>("Sounds/Hit/spriteImpact1"));

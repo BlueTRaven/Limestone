@@ -131,5 +131,10 @@ namespace Limestone.Entities.Enemies
                 }
             }
         }
+
+        public override Enemy Copy()
+        {
+            return new EnemyWisp(position);
+        }
     }
 }

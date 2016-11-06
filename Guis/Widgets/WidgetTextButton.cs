@@ -21,7 +21,7 @@ namespace Limestone.Guis.Widgets
         private TextAlignment textAlignment;
         private Color textColor;
 
-        public WidgetTextButton(Rectangle bounds, SpriteFont font, string text, TextAlignment alignment, Color color) : base(bounds)
+        public WidgetTextButton(Rectangle bounds, SpriteFont font, string text, TextAlignment alignment, Color color) : base(bounds, null, 0)  //since we override draw giving this null won't be an issue
         {
             this.font = font;
             this.text = text;
