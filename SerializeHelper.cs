@@ -17,41 +17,16 @@ using Limestone.Entities;
 using Limestone.Entities.Enemies;
 using Limestone.Items;
 using Limestone.Generation;
+using Limestone.Serialization;
+
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters;
 
 namespace Limestone
 {
     public static class SerializeHelper
     {
-        public class ItemConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return typeof(Item).IsAssignableFrom(objectType);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                JObject item = JObject.Load(reader);
-
-                if (item["itemType"].Value<int>() == 0)
-                {
-                    return item.ToObject<ItemWeapon>();
-                }
-                else if (item["itemType"].Value<int>() == 1)
-                {
-                    return item.ToObject<ItemAbility>();
-                }
-                else
-                {
-                    return item.ToObject<ItemWeapon>();
-                }
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-            }
-        }
-
         public class TileConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType)
@@ -134,16 +109,6 @@ namespace Limestone
             return save;
         }
 
-        public static Tile[,] LoadTiles(string fileName)
-        {
-            using (StreamReader sr = new StreamReader(fileName + ".json"))
-            {
-                string content = sr.ReadToEnd();
-                Tile[,] obj = JsonConvert.DeserializeObject<Tile[,]>(content, new TileConverter());
-                return obj;
-            }
-        }
-
         public static SerWorld LoadWorld(string fileName)
         {
             using (StreamReader sr = new StreamReader(fileName + ".json"))
@@ -152,16 +117,14 @@ namespace Limestone
                 SerWorld obj = JsonConvert.DeserializeObject<SerWorld>(content, new TileConverter());
                 return obj;
             }
-        }
+            /*BinaryFormatter formatter = new BinaryFormatter();
+            formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
+            formatter.Binder = new Serialization.CustomizedBinder();
 
-        public static Player LoadPlayer(string fileName)
-        {
-            using (StreamReader sr = new StreamReader(@"" + fileName + ".json"))
+            using (Stream sw = new FileStream(fileName + ".lbmf", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                string content = sr.ReadToEnd();
-                Player obj = JsonConvert.DeserializeObject<Player>(content,  new ItemConverter());
-                return obj;
-            }
+                return (SerWorld)formatter.Deserialize(sw);
+            }*/
         }
     }
 }

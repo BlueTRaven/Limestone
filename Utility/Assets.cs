@@ -33,7 +33,7 @@ namespace Limestone.Utility
             catch (KeyNotFoundException e)
             {
                 Logger.Log("Couldn't find and/or load texture file '" + name + "'!\n" + e.ToString(), true);
-                return null;
+                return textures["notex"];
             }
         }
 
@@ -85,10 +85,13 @@ namespace Limestone.Utility
 
             textures.Add("shadow", content.Load<Texture2D>("Textures/shadow"));
             textures.Add("notex", content.Load<Texture2D>("Textures/notex"));
+            textures.Add("glowMask", content.Load<Texture2D>("Textures/glowMask"));
             //Gui
             textures.Add("guiItemslot", content.Load<Texture2D>("Textures/GuiItemslot"));
             textures.Add("loading", content.Load<Texture2D>("Textures/loading"));
             textures.Add("guiChars", content.Load<Texture2D>("Textures/Guis/guiChars"));
+            textures.Add("healthBarChunk", content.Load<Texture2D>("Textures/Guis/guiElementHealthBar"));
+            textures.Add("healthBarSegment", content.Load<Texture2D>("Textures/Guis/guiElementHealthBarSegment"));
             //Enemies
             textures.Add("char1", content.Load<Texture2D>("Textures/char1"));
             textures.Add("char2", content.Load<Texture2D>("Textures/char2"));
@@ -113,6 +116,7 @@ namespace Limestone.Utility
             textures.Add("darkTower", content.Load<Texture2D>("Textures/Enemies/darkTower"));
             textures.Add("swampSlime", content.Load<Texture2D>("Textures/Enemies/swampSlime"));
             textures.Add("shadeEye", content.Load<Texture2D>("Textures/Enemies/shadeEye"));
+            textures.Add("coin", content.Load<Texture2D>("Textures/Enemies/coin"));
 
             textures.Add("shuArtifactTower", content.Load<Texture2D>("Textures/Enemies/shuArtifactTower"));
             textures.Add("shuArtifact", content.Load<Texture2D>("Textures/Enemies/shuArtifact"));
@@ -120,33 +124,9 @@ namespace Limestone.Utility
             textures.Add("tefnutArtifact", content.Load<Texture2D>("Textures/Enemies/tefnutArtifact"));
             textures.Add("tefnut", content.Load<Texture2D>("Textures/Enemies/tefnut"));
             //Projectiles
-            textures.Add("bolt", content.Load<Texture2D>("Textures/Projectiles/bolt"));
-            textures.Add("bluebolt", content.Load<Texture2D>("Textures/Projectiles/bluebolt"));
-            textures.Add("shield", content.Load<Texture2D>("Textures/Projectiles/shield"));
-            textures.Add("gear", content.Load<Texture2D>("Textures/Projectiles/gear"));
-            textures.Add("tearshot", content.Load<Texture2D>("Textures/Projectiles/tearshot"));
-            textures.Add("spinner", content.Load<Texture2D>("Textures/Projectiles/spinner"));
-            textures.Add("spinner2", content.Load<Texture2D>("Textures/Projectiles/spinner2"));
-            textures.Add("star", content.Load<Texture2D>("Textures/Projectiles/star"));
-            textures.Add("ball", content.Load<Texture2D>("Textures/Projectiles/ball"));
-            textures.Add("arrow", content.Load<Texture2D>("Textures/Projectiles/arrow"));
-            textures.Add("arrowtail", content.Load<Texture2D>("Textures/Projectiles/arrowtail"));
-            textures.Add("icicle", content.Load<Texture2D>("Textures/Projectiles/icicle"));
-            textures.Add("iceball", content.Load<Texture2D>("Textures/Projectiles/iceball"));
-            textures.Add("elementalshot", content.Load<Texture2D>("Textures/Projectiles/elementalshot"));
-            textures.Add("littlebullet", content.Load<Texture2D>("Textures/Projectiles/littlebullet"));
-            textures.Add("tearSpinner", content.Load<Texture2D>("Textures/Projectiles/tearSpinner"));
-            textures.Add("sun", content.Load<Texture2D>("Textures/Projectiles/sun"));
-            textures.Add("redball", content.Load<Texture2D>("Textures/Projectiles/redball"));
-            textures.Add("wrapper", content.Load<Texture2D>("Textures/Projectiles/wrapper"));
-            textures.Add("fang", content.Load<Texture2D>("Textures/Projectiles/fang"));
-            textures.Add("spiker", content.Load<Texture2D>("Textures/Projectiles/spiker"));
-            textures.Add("spiker2", content.Load<Texture2D>("Textures/Projectiles/spiker2"));
-            textures.Add("swipe", content.Load<Texture2D>("Textures/Projectiles/swipe"));
-            textures.Add("darkSphere", content.Load<Texture2D>("Textures/Projectiles/darkSphere"));
-            textures.Add("slimeShot", content.Load<Texture2D>("Textures/Projectiles/slimeShot"));
-
             textures.Add("projectilesFull", content.Load<Texture2D>("Textures/Projectiles/projectilesFull"));
+            textures.Add("blood", content.Load<Texture2D>("Textures/Projectiles/blood"));
+            textures.Add("framesCard1", content.Load<Texture2D>("Textures/Projectiles/framesCard1"));
             //Tiles
             textures.Add("beach1", content.Load<Texture2D>("Textures/Tiles/beach1"));
             textures.Add("beach2", content.Load<Texture2D>("Textures/Tiles/beach2"));
@@ -179,6 +159,8 @@ namespace Limestone.Utility
 
             textures.Add("tilesFull", content.Load<Texture2D>("Textures/Tiles/tilesFull"));
             textures.Add("bbTilesFull", content.Load<Texture2D>("Textures/Tiles/bbTilesFull"));
+
+            textures.Add("particlesFull", content.Load<Texture2D>("Textures/Particles/particlesFull"));
             //Items
             //Swords
             textures.Add("testItem1", content.Load<Texture2D>("Textures/Items/Weapons/testItem1"));
@@ -247,6 +229,10 @@ namespace Limestone.Utility
             soundEffects.Add("squeakImpact1", content.Load<SoundEffect>("Sounds/Hit/squeakImpact1"));
             soundEffects.Add("playerImpact1", content.Load<SoundEffect>("Sounds/Hit/playerImpact1"));
 
+            soundEffects.Add("coinPickup1", content.Load<SoundEffect>("Sounds/Hit/coinPickup1"));
+
+            soundEffects.Add("groundCoin1", content.Load<SoundEffect>("Sounds/Ground/groundCoin1"));
+
             soundEffects.Add("deathMonster1", content.Load<SoundEffect>("Sounds/Death/deathMonster1"));
 
             soundEffects.Add("bowfire1", content.Load<SoundEffect>("Sounds/Weapon/bowfire1"));
@@ -284,6 +270,27 @@ namespace Limestone.Utility
             cropTexture.SetData(data);
 
             return cropTexture;
+        }
+
+        public static Texture2D GetSolidFilledTexture(Texture2D texture, Color fillColor)
+        {
+            Texture2D finalTex = new Texture2D(Main.graphics.GraphicsDevice, texture.Width, texture.Height);
+
+            Color[] colors = new Color[texture.Width * texture.Height];
+            Color[] colorpixels = texture.GetPixels();
+            for (int x = 0; x < texture.Width; x++)
+            {
+                for (int y= 0; y < texture.Height; y++)
+                {
+                    if (colorpixels[x + (y * texture.Width)] != Color.Transparent)
+                    {
+                        colors[x + (y * texture.Width)] = fillColor;
+                    }
+                }
+            }
+            finalTex.SetData(colors);
+
+            return finalTex;
         }
 
         public static Rectangle GetSourceRect(Vector2 location, Vector2 texturesize)

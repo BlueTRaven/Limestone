@@ -191,3 +191,15 @@ C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Guis\guiChars.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Tiles\bbTilesFull.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Tiles\tilesFull.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Particles\particlesFull.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Enemies\coin.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Sounds\Death\deathGeneric1.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Sounds\Ground\groundCoin1.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Sounds\Hit\genericImpact3.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Sounds\Weapon\dunno.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Sounds\Hit\coinPickup1.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Guis\guiElementHealthBar.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Guis\guiElementHealthBarSegment.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Projectiles\blood.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\glowMask.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Projectiles\framesCard1.xnb

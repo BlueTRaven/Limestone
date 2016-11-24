@@ -14,6 +14,9 @@ namespace Limestone.Inp
     {
         public KeyboardState currentState, previousState;
 
+        private int noInputDuration;
+        private bool noInput;
+
         public void Update()
         {
             currentState = Keyboard.GetState();
@@ -22,11 +25,18 @@ namespace Limestone.Inp
         public void PostUpdate()
         {
             previousState = currentState;
+            noInputDuration--;
+        }
+
+        public void SetNoInput(int duration)
+        {
+            this.noInput = true;
+            this.noInputDuration = duration;
         }
 
         public bool KeyPressed(Keys key)
         {
-            return (currentState.IsKeyDown(key) && previousState.IsKeyUp(key));
+            return (currentState.IsKeyDown(key) && previousState.IsKeyUp(key) && !noInput);
         }
 
         public bool KeyPressedContinuous(Keys key)
@@ -36,20 +46,24 @@ namespace Limestone.Inp
 
         public bool KeyPressModifier(Keys key, Keys modifier)
         {
-            return (currentState.IsKeyDown(modifier) && KeyPressed(key)) || (KeyPressed(modifier) && currentState.IsKeyDown(key));
+            return (currentState.IsKeyDown(modifier) && KeyPressed(key)) || (KeyPressed(modifier) && currentState.IsKeyDown(key) && !noInput);
         }
 
         public bool KeysPressedTogether(Keys[] keys)
         {
-            int num = 0;
-            foreach (Keys k in keys)
+            if (!noInput)
             {
-                if (currentState.IsKeyDown(k))
-                    num++;
-            }
+                int num = 0;
+                foreach (Keys k in keys)
+                {
+                    if (currentState.IsKeyDown(k))
+                        num++;
+                }
 
-            if (num >= 2)
-                return true;
+                if (num >= 2)
+                    return true;
+                else return false;
+            }
             else return false;
         }
     }

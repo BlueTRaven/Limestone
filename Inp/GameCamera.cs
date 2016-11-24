@@ -11,12 +11,26 @@ using Limestone.Guis;
 
 namespace Limestone
 {
+    /// <summary>
+    /// The way the camera moves to the target position.
+    /// Smooth: Smoothly ramps up speed, moving towards the target position until it's near enough, at which point it snaps to the target location.
+    /// Fast: Same as smooth, but faster speed and no ramp up.  //NOTE BUGGY
+    /// Snap: Simply snaps the camera to the target position.
+    /// </summary>
+    public enum CameraMoveMode
+    {
+        Smooth,
+        Fast,
+        Snap
+    }
+
     public class GameCamera
     {
         public Gui activeGui;
 
         private readonly Viewport _viewport;
 
+        private readonly CameraMoveMode defaultMoveMode;
         public GameCamera(Viewport viewport)
         {
             _viewport = viewport;
@@ -25,7 +39,17 @@ namespace Limestone
             Zoom = 1;
             Origin = new Vector2(viewport.Width / 2f, viewport.Height / 2f);
             Position = Vector2.Zero;
+
+            defaultMoveMode = CameraMoveMode.Smooth;
         }
+
+        public CameraMoveMode moveMode;
+        public CameraMoveMode tempMoveMode;
+        public int moveModeDuration;
+
+        public Vector2 target;
+        private Vector2 prevTarget;
+        public Vector2 velocity;
 
         public float oldCameraRotation;
 
@@ -34,6 +58,8 @@ namespace Limestone
         public float Rotation { get; set; }
         public float Zoom { get; set; }
         public Vector2 Origin { get; set; }
+
+        public Rectangle clamp;
 
         public bool moving { get { return Position != prevPosition; } set { } }
 
@@ -146,8 +172,33 @@ namespace Limestone
             quaking = true;
         }
 
+        public void SetMoveMode(CameraMoveMode mode, int duration)
+        {
+            tempMoveMode = mode;
+            moveModeDuration = duration;
+        }
+
         public void Update()
         {
+            if (moveModeDuration > 0)
+                moveMode = tempMoveMode;
+
+            if (moveMode == CameraMoveMode.Snap)
+                worldCenter = target;
+            else if (moveMode == CameraMoveMode.Fast)
+            {
+                Vector2 dist = target - worldCenter;
+
+                if (dist != Vector2.Zero)
+                    dist = Vector2.Normalize(dist);
+                else dist = Vector2.Zero;
+
+                //velocity += dist;   //if distance is not zero, return normalized dist, otherwie return vector2.zero
+                worldCenter += dist * 4;
+            }
+            else if (moveMode == CameraMoveMode.Smooth)
+                worldCenter = Vector2.Lerp(worldCenter, target, .10f);
+
             if (fadeTimer > 0)
             {
                 fadeTimer--;
@@ -167,6 +218,7 @@ namespace Limestone
         {
             if (activeGui == null)
                 activeGui = new GuiMainMenu();
+
             if (quaking)
             {
                 if (quakeDuration > 0)
@@ -178,8 +230,16 @@ namespace Limestone
                 else quaking = false;
             }
 
+            if (clamp != Rectangle.Empty)
+            {
+                Position = Vector2.Clamp(Position, Vector2.Zero, new Vector2(clamp.Width - _viewport.Width, clamp.Height - _viewport.Height));
+            }
+
             activeGui.Update(main);
             prevPosition = Position;
+            prevTarget = target;
+
+            moveMode = defaultMoveMode;
         }
 
         public void Draw(Main main, SpriteBatch batch)
@@ -187,6 +247,9 @@ namespace Limestone
             if (main.world != null)
                 foreach (Enemy e in main.world.enemies)
                     e.DrawHealthBar(batch);
+
+            if (Options.DEBUGDRAWCAMERACLAMP)
+                DrawGeometry.DrawHollowRectangle(batch, clamp, 4, Color.Red);
 
             DrawHelper.StartDrawCameraSpace(batch);
             if (!Main.hold && main.world != null)
@@ -199,7 +262,7 @@ namespace Limestone
                         {
                             main.world.player.DrawHealthBar(batch);
 
-                            if (main.world.player.drawInventory)
+                            /*if (main.world.player.drawInventory)
                                 main.world.player.DrawItemsContents(batch);
                             foreach (Bag b in main.world.bags)
                             {
@@ -208,7 +271,7 @@ namespace Limestone
                                     if (b.hitbox.Intersects(main.world.player.hitbox))
                                         b.DrawBagContents(batch, main.world.player.inventoryRect);
                                 }
-                            }
+                            }*/
 
                             if (main.world.player.dead)
                             {

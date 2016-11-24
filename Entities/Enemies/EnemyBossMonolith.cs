@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Limestone.Utility;
 using Limestone.Tiles;
 using Limestone.Items;
-using Limestone.Buffs;
+
 
 namespace Limestone.Entities.Enemies
 {
@@ -27,9 +27,8 @@ namespace Limestone.Entities.Enemies
         private float angle;
 
         private float tempHeight;
-        public EnemyBossMonolith(Vector2 position) : base()
+        public EnemyBossMonolith(Vector2 position) : base(position)
         {
-            this.position = position;
             SetDefaults();
         }
 
@@ -40,7 +39,6 @@ namespace Limestone.Entities.Enemies
             hitSound = Assets.GetSoundEffect("woodImpact2");
             dieSound = Assets.GetSoundEffect("woodImpact1");
 
-            xpGive = 2000;
             health = 30000;
             //defense = 45;
             scale = 12;
@@ -52,16 +50,12 @@ namespace Limestone.Entities.Enemies
             hitbox = new RotateableRectangle(new Rectangle(position.ToPoint(), new Point(32)));
             activeDistance = 1024;
 
-            lootItem = new LootItem(0);
+            //lootItem = new LootItem(0);
 
             setSize = new Rectangle(0, 0, 16, 16);
-            frameCollections.Add(new FrameCollection(false, new Frame(15, new Rectangle(0, 0, 16, 0))));
 
-            frameCollections.Add(new FrameCollection(true, new Frame(15, new Rectangle(0, 0, 0, 0))));
-
-            frameCollections[0].active = true;
-
-            frameBehavior = WalkShoot;
+            frameConfiguration = new FrameConfiguration(FrameConfiguration.FrameActionPreset3, this,
+                new FrameCollection(false, new Frame(15, new Rectangle(0, 0, 16, 0))));
 
             maxHealth = health;
             healthBarDefault = new Vector2(-24, 48);
@@ -72,21 +66,21 @@ namespace Limestone.Entities.Enemies
         {
             base.Update(world);
 
-            if (distance < 256 && !start)
+            if (distFromPlayer < 256 && !start)
             {
                 SetFlash(Color.Black, 60, 360);
                 invulnTicks = 360;
                 start = true;
             }
 
-            if (currentFrame.size.Height < 16 && start)
+            if (frameConfiguration.currentFrame.size.Height < 16 && start)
             {
                 Main.camera.SetQuake(4, 1);
                 tempHeight += (16f / 360f);
-                currentFrame.size.Height = (int)tempHeight;
+                frameConfiguration.currentFrame.size.Height = (int)tempHeight;
 
                 if (alive % 2 == 0)
-                    world.CreateParticle(new Particle(center + new Vector2((float)Main.rand.NextDouble(-16, 16), (float)Main.rand.NextDouble(-16, 16)), new Vector2((float)Main.rand.NextDouble(-4, 4), (float)Main.rand.NextDouble(-4, 4)), Color.Gray, (float)Main.rand.NextDouble(4f, 8.5f), 15));
+                    world.CreateParticle(new Particle(null, center + new Vector2((float)Main.rand.NextDouble(-16, 16), (float)Main.rand.NextDouble(-16, 16)), new Vector2((float)Main.rand.NextDouble(-4, 4), (float)Main.rand.NextDouble(-4, 4)), Color.Gray, (float)Main.rand.NextDouble(4f, 8.5f), 15));
             }
 
             if (start && flashTotalDuration <= 0)
@@ -232,7 +226,7 @@ namespace Limestone.Entities.Enemies
                             float numshots = Main.rand.Next(8, 12);
                             for (float i = 0; i < 360f; i += 360f / numshots)
                             {
-                                Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8), i, 180, 5, 512, 50);
+                                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8), i, 180, 5, 512, 50);
                                 //p.armorPiercing = true;
                                 world.CreateProjectile(p);
                             }
@@ -243,9 +237,8 @@ namespace Limestone.Entities.Enemies
                             float numshots = Main.rand.Next(8, 12);
                             for (float i = 0; i < 360f; i += 360f / numshots)
                             {
-                                Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 192, 0), 4, center, Vector2.Zero, new Vector2(8), i, Main.rand.Next(360), 8, 1024, 80)
-                                        .SetSpin(-12)
-                                        .GiveBuff(new Buff("Weak", 600, Buff.EffectWeakness));
+                                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 192, 0), 4, center, Vector2.Zero, new Vector2(8), i, Main.rand.Next(360), 8, 1024, 80)
+                                        .SetSpin(-12);
                                     world.CreateProjectile(p);
                             }
                             shot2 = Main.rand.Next(45, 90);
@@ -255,9 +248,8 @@ namespace Limestone.Entities.Enemies
                             float numshots = Main.rand.Next(8, 12);
                             for (float i = 0; i < 360f; i += 360f / numshots)
                             {
-                                Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 14, 94), 4, center, Vector2.Zero, new Vector2(8), i, Main.rand.Next(360), 6, 1024, 60)
-                                .SetSpin(12)
-                                .GiveBuff(new Buff("Stunned", 240, Buff.EffectStunned));
+                                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 14, 94), 4, center, Vector2.Zero, new Vector2(8), i, Main.rand.Next(360), 6, 1024, 60)
+                                .SetSpin(12);
                                 world.CreateProjectile(p);
                             }
                             shot3 = Main.rand.Next(60, 80);
@@ -267,7 +259,7 @@ namespace Limestone.Entities.Enemies
                             float numshots = Main.rand.Next(5, 7);
                             for (float i = 0; i < 360f; i += 360f / numshots)
                             {
-                                Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 0, 1), Color.White, 4, center, Vector2.Zero, new Vector2(8, 16),  i, 180, 9.5f, 768, 140);
+                                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 1), Color.White, 4, center, Vector2.Zero, new Vector2(8, 16),  i, 180, 9.5f, 768, 140);
                                 world.CreateProjectile(p);
                             }
                             shot4 = Main.rand.Next(60, 80);
@@ -277,7 +269,7 @@ namespace Limestone.Entities.Enemies
                             float numshots = Main.rand.Next(5, 7);
                             for (float i = 0; i < 360f; i += 360f / numshots)
                             {
-                                Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 8, 1), Color.White, 12, center, Vector2.Zero, new Vector2(24, 64), i, 225, 16, 1024, 400);
+                                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 8, 1), Color.White, 12, center, Vector2.Zero, new Vector2(24, 64), i, 225, 16, 1024, 400);
                                 //.SetPredictive(world.player);
                                 world.CreateProjectile(p);
                             }
@@ -294,7 +286,7 @@ namespace Limestone.Entities.Enemies
                         float numshots = Main.rand.Next(10, 20);
                         for (float i = 0; i <= 360f; i += 360f / numshots)
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8), i , 180, 5, 512, 50);
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8), i , 180, 5, 512, 50);
                             //p.armorPiercing = true;
                             world.CreateProjectile(p);
                         }
@@ -306,10 +298,9 @@ namespace Limestone.Entities.Enemies
                     {
                         for (float i = -80; i < 80; i += (80 / phase))
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 2, 1), new Color(92, 192, 0), 8, center, Vector2.Zero, new Vector2(32), rotToPlayer + i, Main.rand.Next(360), 3.5f, 512, 250)
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 2, 1), new Color(92, 192, 0), 8, center, Vector2.Zero, new Vector2(32), rotToPlayer + i, Main.rand.Next(360), 3.5f, 512, 250)
                                 .SetSpin(-16)
-                                .SetBoomerang()
-                                .GiveBuff(new Buff("Slowed", 120, Buff.EffectSlowed));
+                                .SetBoomerang();
                             world.CreateProjectile(p);
                         }
                         shot1 = Main.rand.Next(60, 240);
@@ -319,9 +310,8 @@ namespace Limestone.Entities.Enemies
                     {
                         for (float i = -7.5f; i <= 7.5f; i += 5)
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 192, 0), 4, center, Vector2.Zero, new Vector2(8), rotToPlayer + i, Main.rand.Next(360), 8, 1024, 80)
-                                .SetSpin(-12)
-                                .GiveBuff(new Buff("Weak", 600, Buff.EffectWeakness));
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 192, 0), 4, center, Vector2.Zero, new Vector2(8), rotToPlayer + i, Main.rand.Next(360), 8, 1024, 80)
+                                .SetSpin(-12);
                             world.CreateProjectile(p);
                         }
                         shot2 = Main.rand.Next(45, 90);
@@ -331,9 +321,8 @@ namespace Limestone.Entities.Enemies
                     {
                         for (float i = -3.75f; i <= 3.75f; i += 2.5f)
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 14, 94), 4, center, Vector2.Zero, new Vector2(8), rotToPlayer + i, Main.rand.Next(360), 6, 1024, 60)
-                                .SetSpin(12)
-                                .GiveBuff(new Buff("Stunned", 240, Buff.EffectStunned));
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 7, 1), new Color(255, 14, 94), 4, center, Vector2.Zero, new Vector2(8), rotToPlayer + i, Main.rand.Next(360), 6, 1024, 60)
+                                .SetSpin(12);
                             world.CreateProjectile(p);
                         }
                         shot3 = Main.rand.Next(60, 80);
@@ -343,7 +332,7 @@ namespace Limestone.Entities.Enemies
                     {
                         for (float i = -4; i <= 4; i += 4f)
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 0, 1), Color.White, 4, center, Vector2.Zero, new Vector2(8, 16), rotToPlayer + i, 180, 9.5f, 768, 140);
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 1), Color.White, 4, center, Vector2.Zero, new Vector2(8, 16), rotToPlayer + i, 180, 9.5f, 768, 140);
                             world.CreateProjectile(p);
                         }
                         shot4 = Main.rand.Next(60, 80);
@@ -351,7 +340,7 @@ namespace Limestone.Entities.Enemies
 
                     if (shot5 <= 0 && shoot5)
                     {
-                        Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 8, 1), Color.White, 12, center, Vector2.Zero, new Vector2(24, 64), rotToPlayer, 225, 16, 1024, 400);
+                        Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 8, 1), Color.White, 12, center, Vector2.Zero, new Vector2(24, 64), rotToPlayer, 225, 16, 1024, 400);
                             //.SetPredictive(world.player);
                         world.CreateProjectile(p);
 
@@ -362,7 +351,12 @@ namespace Limestone.Entities.Enemies
             prevhp = health;
         }
 
-        public override Enemy Copy()
+        protected override void RunFrameConfiguration()
+        {
+            frameConfiguration.Update();
+        }
+
+        public override Entity Copy()
         {
             return new EnemyBossMonolith(position);
         }

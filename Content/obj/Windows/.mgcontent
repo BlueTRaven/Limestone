@@ -165,5 +165,17 @@
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Guis/guiChars.png</File>
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Tiles/bbTilesFull.png</File>
     <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Tiles/tilesFull.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Particles/particlesFull.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Enemies/coin.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Sounds/Death/deathGeneric1.wav</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Sounds/Ground/groundCoin1.wav</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Sounds/Hit/genericImpact3.wav</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Sounds/Weapon/dunno.wav</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Sounds/Hit/coinPickup1.wav</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Guis/guiElementHealthBar.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Guis/guiElementHealthBarSegment.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Projectiles/blood.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/glowMask.png</File>
+    <File>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Projectiles/framesCard1.png</File>
   </SourceFiles>
 </SourceFileCollection>

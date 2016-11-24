@@ -41,7 +41,7 @@ namespace Limestone.Tiles
 
         }
 
-        public override void OnCollide(World world, Entity entity)
+        public override void OnEntityCollide(World world, Entity entity)
         {
         }
 

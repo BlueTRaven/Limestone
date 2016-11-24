@@ -1,4 +1,4 @@
-﻿namespace Limestone.Items
+﻿/*namespace Limestone.Items
 {
     public class LootRule
     {
@@ -12,3 +12,4 @@
         }
     }
 }
+*/

@@ -11,6 +11,20 @@ namespace Limestone.Utility
 {
     public static class VectorHelper
     {
+        /// <summary>
+        /// Gets the angle of a given vector, relative to 0,0.
+        /// </summary>
+        /// <returns>The angle in degrees.</returns>
+        public static float GetVectorAngle(Vector2 normVec)
+        {
+            return GetAngleBetweenPoints(Vector2.Zero, Vector2.Normalize(normVec));
+        }
+
+        public static Vector2 GetAngleNormVector(float degrees)
+        {
+            return Vector2.Transform(new Vector2(-1, 0), Matrix.CreateRotationZ(MathHelper.ToRadians(degrees)));
+        }
+
         public static int Next(this Random rand, float val1, float val2)
         {
             return rand.Next((int)val1, (int)val2);
@@ -26,7 +40,7 @@ namespace Limestone.Utility
             return fByte;
         }
 
-        public static float FindAngleBetweenTwoPoints(Vector2 A, Vector2 B)
+        public static float GetAngleBetweenPoints(Vector2 A, Vector2 B)
         {
             return MathHelper.ToDegrees((float)Math.Atan2(A.Y - B.Y, A.X - B.X));
         }

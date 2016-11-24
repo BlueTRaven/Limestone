@@ -53,6 +53,18 @@ namespace Limestone
     }
     #endregion 
 
+    /// <summary>
+    /// The slow down mode, used by Main.SlowDown(SlowDownMode type, ...)
+    /// Half: world only ticks every other tick.
+    /// Third: world only ticks every third tick.
+    /// Stop: world doesn't tick.
+    /// </summary>
+    public enum SlowDownMode
+    {
+        Half,
+        Third,
+        Stop
+    }
     public class Main : Game
     {
         public static string fps;
@@ -76,11 +88,17 @@ namespace Limestone
 
         public static bool typing;
 
-
         public static bool hold = true;
+
+        private static bool slowed;
+        private static SlowDownMode slowMode;
+        private static int slowDuration;
+
         public Main()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = HEIGHT;
+            graphics.PreferredBackBufferWidth = WIDTH;
             Content.RootDirectory = "Content";
         }
 
@@ -149,14 +167,32 @@ namespace Limestone
             if (Main.keyboard.KeyPressed(Keys.P))
                 paused = !paused;
 
-            //if (keyboard.KeyPressed(Keys.Y))
-
             if (!hold)
             {
                 if (world != null)
                 {
                     if (!paused)
-                        world.Update();
+                    {
+                        if (slowed)
+                        {   //Doesn't check for slowMode == Stop, because it doesn't need to update then.
+                            slowDuration--;
+                            if (slowMode == SlowDownMode.Half)
+                            {
+                                if (slowDuration % 2 == 0)
+                                    world.Update();
+                            }
+                            else if (slowMode == SlowDownMode.Third)
+                            {
+                                if (slowDuration % 3 == 0)
+                                    world.Update();
+                            }
+
+                            if (slowDuration < 0)
+                                slowed = false;
+                        }
+                        else
+                            world.Update();
+                    }
                     else if (paused && Main.keyboard.KeyPressed(Keys.O))
                         world.Update();
                 }
@@ -177,6 +213,13 @@ namespace Limestone
             }
         }
 
+        public static void SlowDown(SlowDownMode mode, int duration)
+        {
+            Main.slowMode = mode;
+            Main.slowDuration = duration;
+            Main.slowed = true;
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -195,9 +238,9 @@ namespace Limestone
 
             if (world != null) world.Draw(camera, spriteBatch);
 
-            DrawHelper.StartDrawCameraSpace(spriteBatch);
+            //DrawHelper.StartDrawCameraSpace(spriteBatch);
             camera.Draw(this, spriteBatch);
-            DrawHelper.StartDrawCameraSpace(spriteBatch);
+            //DrawHelper.StartDrawCameraSpace(spriteBatch);
             mouse.Draw(spriteBatch);
             spriteBatch.End();
 

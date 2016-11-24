@@ -11,15 +11,22 @@ using Microsoft.Xna.Framework.Input;
 using Limestone.Utility;
 using Limestone.Tiles;
 using Limestone.Entities.Enemies;
+using Limestone.Entities.NPCs;
+using Limestone.Entities.Collectables;
+using Limestone.Serialization;
+
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 
 namespace Limestone.Entities
 {
-    public class EnemySpawner : Entity
+    [Serializable]
+    public class EntitySpawner : Entity, ISerializable
     {
         public static bool DEBUGDRAWSPAWNERS = true;
         public override Vector2 center { get { return Vector2.Zero; } set { } }
         public int type, rate;
-        List<Enemy> enemies = new List<Enemy>();
+        List<Entity> entities = new List<Entity>();
         int types;
         int cooldown;
 
@@ -29,28 +36,37 @@ namespace Limestone.Entities
 
         private int spawnDistance;  ///Distance from spawner that entities are spawned at.
         
-        public EnemySpawner(Vector2 position, int type)
+        public EntitySpawner(Vector2 position, int type) : base(position)
         {
             this.tType = EntityType.Spawner;
-            this.position = position;
             this.type = type;
             this.tileCollides = false;
             SetDefaults();
         }
 
+        protected EntitySpawner(SerializationInfo info, StreamingContext context) : base(Vector2.Zero)
+        {
+            type = info.GetInt32("type");
+            position = ((SerVector)info.GetValue("position", typeof(SerVector))).ToVector2();
+
+            tType = EntityType.Spawner;
+            tileCollides = false;
+            SetDefaults();
+        }
+
         private void SetDefaults()
         {
-            rerolls = false;
-            if (type == 0)
+            rerolls = false;    //set within typing
+            if (type == 1)
             {
                 spawnDistance = 512;
-                enemies.Add(new EnemyBossMonolith(position));
+                entities.Add(new NPCEcho(position));
             }
         }
 
         public void RerollEnemies()
         {
-            enemies.Clear();
+            entities.Clear();
             spawned = false;
             SetDefaults();
         }
@@ -59,9 +75,14 @@ namespace Limestone.Entities
         {
             if (force || cooldown <= 0)
             {
-                foreach (Enemy e in enemies)
+                foreach (Entity e in entities)
                 {
-                    world.CreateEnemy(e.Copy());
+                    if (e.tType == EntityType.Enemy)
+                        world.CreateEnemy((Enemy)e.Copy());
+                    else if (e.tType == EntityType.Collectable)
+                        world.CreateCollectable((Collectable)e.Copy());
+                    else if (e.tType == EntityType.NPC)
+                        world.CreateNPC((NPC)e.Copy());
                 }
 
                 if (rerolls)
@@ -70,6 +91,10 @@ namespace Limestone.Entities
         }
 
         public override void Die(World world)
+        {   //NOOP
+        }
+
+        protected override void RunFrameConfiguration()
         {   //NOOP
         }
 
@@ -90,6 +115,15 @@ namespace Limestone.Entities
                 SpawnEnemies(world, true);
                 spawned = true;
             }
+        }
+
+        public override void OnTileCollide(World world, Tile tile)
+        {   //NOOP
+        }
+
+        public override Entity Copy()
+        {   //NOOP
+            return null;
         }
     }
 }

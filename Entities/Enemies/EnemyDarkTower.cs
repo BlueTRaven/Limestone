@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Limestone.Utility;
 using Limestone.Tiles;
 using Limestone.Items;
-using Limestone.Buffs;
+
 
 namespace Limestone.Entities.Enemies
 {
@@ -21,9 +21,8 @@ namespace Limestone.Entities.Enemies
 
         private int shot0, angle, spawnRate;
         private bool activated, reversed, dying;
-        public EnemyDarkTower(Vector2 position) : base()
+        public EnemyDarkTower(Vector2 position) : base(position)
         {
-            this.position = position;
             SetDefaults();
         }
 
@@ -34,7 +33,6 @@ namespace Limestone.Entities.Enemies
             hitSound = Assets.GetSoundEffect("squeakImpact1");
             dieSound = Assets.GetSoundEffect("deathMonster1");
 
-            xpGive = 650;
             health = 3500;
             scale = 4;
             shadowScale = 4;
@@ -44,16 +42,7 @@ namespace Limestone.Entities.Enemies
             hitbox = new RotateableRectangle(new Rectangle(position.ToPoint(), new Point(32)));
             activeDistance = 1024;
 
-            lootItem = new LootItem(0);
-
             setSize = new Rectangle(0, 0, 16, 16);
-            frameCollections.Add(new FrameCollection(false, new Frame(15, new Rectangle(0, 0, 16, 16))));
-
-            frameCollections.Add(new FrameCollection(true, new Frame(15, new Rectangle(0, 0, 0, 0))));
-
-            frameCollections[0].active = true;
-
-            frameBehavior = WalkShoot;
 
             maxHealth = health;
         }
@@ -72,13 +61,13 @@ namespace Limestone.Entities.Enemies
                 SetFlash(Color.Blue, 60, 60);
                 activated = true;
             }
-            if (distance < 512)
+            if (distFromPlayer < 512)
             {
                 if (shot0 <= 0 && activated && flashTotalDuration <= 0)
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, position, Vector2.Zero, new Vector2(8), angle + i * 90, 0, 5, 512, 120);
+                        Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, 4, position, Vector2.Zero, new Vector2(8), angle + i * 90, 0, 5, 512, 120);
                             //new Projectile(Assets.GetTexFromSource("projectilesFull", 1, 0), Color.White, position - new Vector2(16), new Vector2(8, 8), true, 4, angle + i * 90, 5, 0, 512, 120);
                         world.CreateProjectile(p);
                     }
@@ -127,9 +116,9 @@ namespace Limestone.Entities.Enemies
                     {
                         for (float i = 0; i < 360f; i += 360f / 25f)
                         {
-                            Projectile2 p = new Projectile2(Assets.GetTexFromSource("projectilesFull", 0, 1), new Color(77, 58, 84), 4, position, Vector2.Zero, new Vector2(8, 4), i, 180, 5, 512, 50).SetWavy(16, .03f, false)
+                            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 1), new Color(77, 58, 84), 4, position, Vector2.Zero, new Vector2(8, 4), i, 180, 5, 512, 50).SetWavy(16, .03f, false)
                                 //new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 1), new Color(77, 58, 84), position - new Vector2(16), new Vector2(8, 4), true, 4, i, 5, 180, 512, 50).SetWavy(16, .03f, false)
-                                .SetParticleTrail(new Particle(Vector2.Zero, Vector2.Zero, new Color(77, 58, 84), 4, 10), 1.5f, 3, 1, new Vector2(-.5f, .5f));
+                                .SetParticleTrail(new Particle(null, Vector2.Zero, Vector2.Zero, new Color(77, 58, 84), 4, 10), 1.5f, 3, 1, new Vector2(-.5f, .5f));
                             world.CreateProjectile(p);
                         }
                         Die(world);
@@ -138,7 +127,11 @@ namespace Limestone.Entities.Enemies
             }
         }
 
-        public override Enemy Copy()
+        protected override void RunFrameConfiguration()
+        {
+        }
+
+        public override Entity Copy()
         {
             return new EnemyDarkTower(position);
         }

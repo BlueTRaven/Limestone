@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
@@ -15,10 +15,12 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
 using Limestone.Utility;
-using Limestone.Buffs;
+
 using Limestone.Tiles;
 using Limestone.Items;
 using Limestone.Inp;
+using Limestone.Guis;
+using Limestone.Interface;
 
 using Superbest_random;
 
@@ -89,10 +91,10 @@ namespace Limestone.Entities
         public string map = "none";
 
         public bool DEBUGINVENCIBLE = false;
-        public Player(Vector2 position, Class cClass)
+        public Player(Vector2 position, Class cClass) : base (position)
         {
             this.tType = EntityType.Player;
-            player = true;
+            isPlayer = true;
             active = true;
             this.position = position;
             this.cClass = cClass;
@@ -331,11 +333,18 @@ namespace Limestone.Entities
                     manaTextSize = Assets.GetFont("munro12").MeasureString(String.Format("{0,4}/{1,4}", mana, maxMana));
                     float manaP = (float)mana / (float)maxMana;
                     manaWidth = 128 * manaP;
+
+                    for (float i = 0; i < Main.rand.Next(3, 6); i++)
+                    {
+                        //Particle p = new Particle(Assets.GetTexFromSource("particlesFull", 0, 0), center, Vector2.Transform(new Vector2(-(float)Main.rand.NextDouble(1, 3), 0), Matrix.CreateRotationZ(MathHelper.ToRadians((float)Main.rand.NextDouble(0, 360)))), Color.White, 0.65f, 30);
+                        //world.CreateParticle(p);
+
+                    }
                 }
 
                 if (Main.mouse.MouseKeyPressContinuous(Inp.MouseButton.Left) && !movingRect)
                 {
-                    float angle = VectorHelper.FindAngleBetweenTwoPoints(center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.position));
+                    float angle = VectorHelper.GetAngleBetweenPoints(center, VectorHelper.ConvertScreenToWorldCoords(Main.mouse.position));
                     float angleRel = angle - MathHelper.ToDegrees(-Main.camera.Rotation);
 
                     if (angleRel >= 360)
@@ -533,7 +542,7 @@ namespace Limestone.Entities
             baseMana += Main.rand.Next(manaPL.X, manaPL.Y + 1);
         }
 
-        public override void TakeDamage(int amt, Projectile2 source, World world)
+        public override void TakeDamage(int amt, IDamageDealer source, World world)
         {
             if (!DEBUGINVENCIBLE)
             {
@@ -549,17 +558,17 @@ namespace Limestone.Entities
 
                         float randVelY = (float)Main.rand.NextDouble(-2, 2);
 
-                        world.CreateParticle(new Particle(hitbox.center + (Main.camera.down * 4), new Vector2(randVelX, randVelY), c, 4, Main.rand.Next(12, 21)));
+                        world.CreateParticle(new Particle(null, hitbox.center + (Main.camera.down * 4), new Vector2(randVelX, randVelY), c, 4, Main.rand.Next(12, 21)));
                     }
                 }
 
                 int damagePost = 0;
                 if (source != null)
                 {
-                    if (source.giveBuffs != null)
+                    if (source.GetGiveBuffs() != null)
                     {
                         bool foundBuff = false;
-                        foreach (Buff gb in source.giveBuffs)
+                        foreach (Buff gb in source.GetGiveBuffs())
                         {
                             foreach (Buff b in buffs)
                             {
@@ -582,7 +591,7 @@ namespace Limestone.Entities
                             }
                         }
                     }
-                    damagePost = CalculateDefenseResist(amt, source.armorPiercing);
+                    damagePost = CalculateDefenseResist(amt, source.GetArmorPiercing());
                 }
                 else
                     damagePost = CalculateDefenseResist(amt, true);
@@ -592,7 +601,7 @@ namespace Limestone.Entities
                 {
                     hitSound.Play();
 
-                    if (source == null ? true : source.armorPiercing || defense == 0)
+                    if (source == null ? true : source.GetArmorPiercing() || defense == 0)
                         texts.Add(new DamageText(damagePost.ToString(), center + new Vector2(0, -texture.Height), Color.Purple));
                     else
                         texts.Add(new DamageText(damagePost.ToString(), center + new Vector2(0, -texture.Height), Color.Red));
@@ -628,6 +637,15 @@ namespace Limestone.Entities
         {
             maxSpeed = value;
             speed = maxSpeed;
+        }
+
+        public override void OnTileCollide(World world, Tile tile)
+        {   //NOOP
+        }
+
+        protected override void RunFrameConfiguration()
+        {
+            frameConfiguration.Update();
         }
 
         #region drawing
@@ -794,6 +812,12 @@ namespace Limestone.Entities
             foreach (DamageText dt in texts)
                 dt.Draw(batch);
         }
-        #endregion 
+
+        public override Entity Copy()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }
+*/

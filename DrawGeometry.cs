@@ -29,6 +29,35 @@ namespace Limestone
             batch.Draw(whitePixel, new Rectangle(area.X, area.Y + area.Height - width, area.Width, width), color);
         }
 
+        public static void DrawCircle(SpriteBatch batch, Vector2 center, float radius, Color color, int lineWidth = 2, int segments = 16)
+        {
+            Vector2[] vertex = new Vector2[segments];
+
+            double increment = Math.PI * 2.0 / segments;
+            double theta = 0.0;
+
+            for (int i = 0; i < segments; i++)
+            {
+                vertex[i] = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
+                theta += increment;
+            }
+
+            DrawPolygon(batch, vertex, segments, color, lineWidth);
+        }
+        public static void DrawPolygon(SpriteBatch batch, Vector2[] vertex, int count, Color color, int lineWidth)
+        {
+            Texture2D whitePixel = Assets.GetTexture("whitePixel");
+
+            if (count > 0)
+            {
+                for (int i = 0; i < count - 1; i++)
+                {
+                    DrawLine(batch, vertex[i], vertex[i + 1], color, lineWidth);
+                }
+                DrawLine(batch, vertex[count - 1], vertex[0], color, lineWidth);
+            }
+        }
+
         public static void DrawLine(SpriteBatch batch, Vector2 begin, Vector2 end, Color color, int width = 1)
         {
             Texture2D whitePixel = Assets.GetTexture("whitePixel");

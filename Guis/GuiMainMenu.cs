@@ -18,11 +18,12 @@ namespace Limestone.Guis
     {
         public GuiMainMenu()
         {
-            widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.center - new Vector2(64, 16)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Play", TextAlignment.Center, Color.White)
+            widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.center - new Vector2(64, 16)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Start", TextAlignment.Center, Color.White)
                 .SetBackgroundColor(Color.White, Color.DarkGray, Color.Gray));
             widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.center - new Vector2(64, -16)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Options", TextAlignment.Center, Color.White)
                 .SetBackgroundColor(Color.White, Color.DarkGray, Color.Gray));
-            Main.camera.SetFade(Color.Black, true, 120);
+            widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.center - new Vector2(64, -48)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Exit", TextAlignment.Center, Color.White)
+                .SetBackgroundColor(Color.White, Color.DarkGray, Color.Gray));
         }
 
         public override void Update(Main main)
@@ -30,16 +31,17 @@ namespace Limestone.Guis
             foreach (Widget widget in widgets)
                 widget.Update();
 
-            if (((WidgetButton)widgets[0]).pressed)
+            if (((WidgetButton)widgets[0]).pressed || Main.keyboard.KeyPressed(Keys.Enter))
             {
-                //Main.hold = false;
+                Main.hold = false;
 
-                //main.world = new World();
-                //Thread thread = main.world.CreateWorld();
+                main.world = new World();
 
-                //Main.camera.activeGui = new GuiLoading(thread);
+                Thread loadThread = new Thread(() => main.world.LoadWorld(new Player2(Vector2.Zero)));
+                loadThread.Start();
+                main.world.mapLoadThread = loadThread;
 
-                Main.camera.activeGui = new GuiCharacterSelect(this);
+                Main.camera.activeGui = new GuiLoading(loadThread);
 
                 active = false;
             }
@@ -47,6 +49,11 @@ namespace Limestone.Guis
             if (((WidgetButton)widgets[1]).pressed)
             {
                 Main.camera.activeGui = new GuiOptions(this);
+            }
+
+            if (((WidgetButton)widgets[2]).pressed)
+            {
+                main.Exit();
             }
         }
 

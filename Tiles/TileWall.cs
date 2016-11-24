@@ -47,13 +47,13 @@ namespace Limestone.Tiles
             this.drawOutline = drawOutline;
         }
 
-        public override void OnCollide(World world, Entity entity)
+        public override void OnEntityCollide(World world, Entity entity)
         {
             if (adjacentTiles == null)
                 SetCardinalTiles(world);
             if (entity.tType == EntityType.Projectile)
             {
-                Projectile2 p = (Projectile2)entity;
+                Projectile p = (Projectile)entity;
 
                 if (p.tileCollides)
                     p.Die(world);
@@ -70,11 +70,17 @@ namespace Limestone.Tiles
                 {
                     if (centerDistance.Y > 0)
                     {
+                        if (entity.tType == EntityType.Player)
+                            ((Player2)entity).gravityVelocity.Y = 0;
+
                         if (adjacentTileUp != null &&!adjacentTileUp.collidable)
                             el.Move(new Vector2(0, -intersection.Height - 1));
                     }
                     if (centerDistance.Y < 0)
                     {
+                        if (entity.tType == EntityType.Player)
+                            ((Player2)entity).gravityVelocity.Y = 0;
+
                         if (adjacentTileDown != null && !adjacentTileDown.collidable)
                             el.Move(new Vector2(0, intersection.Height + 1));
                     }
@@ -83,11 +89,17 @@ namespace Limestone.Tiles
                 {
                     if (centerDistance.X > 0)
                     {
+                        if (entity.tType == EntityType.Player)
+                            ((Player2)entity).gravityVelocity.X = 0;
+
                         if (adjacentTileLeft != null && !adjacentTileLeft.collidable)
                             el.Move(new Vector2(-intersection.Width, 0));
                     }
                     if (centerDistance.X < 0)
                     {
+                        if (entity.tType == EntityType.Player)
+                            ((Player2)entity).gravityVelocity.X = 0;
+
                         if (adjacentTileRight != null && !adjacentTileRight.collidable)
                             el.Move(new Vector2(intersection.Width, 0));
                     }

@@ -36,7 +36,7 @@ namespace Limestone.Tiles
             batch.Draw(floorTex, bounds, Color.White);
         }
 
-        public override void OnCollide(World world, Entity entity)
+        public override void OnEntityCollide(World world, Entity entity)
         {
         }
 

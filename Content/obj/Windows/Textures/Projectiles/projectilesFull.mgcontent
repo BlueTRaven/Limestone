@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/Textures/Projectiles/projectilesFull.png</SourceFile>
-  <SourceTime>2016-10-27T13:55:34.3820012-04:00</SourceTime>
+  <SourceTime>2016-11-17T20:52:31.3575434-05:00</SourceTime>
   <DestFile>C:/Users/taylo/Documents/Programming/C#/Game/Limestone/Limestone/Content/bin/Windows/Textures/Projectiles/projectilesFull.xnb</DestFile>
-  <DestTime>2016-10-27T14:23:24.7594608-04:00</DestTime>
+  <DestTime>2016-11-17T20:55:33.5123384-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2016-03-30T02:36:08-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

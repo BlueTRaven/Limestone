@@ -18,6 +18,8 @@ using Limestone.Entities.Enemies;
 using Limestone.Items;
 using Limestone.Generation;
 using Limestone.Guis;
+using Limestone.Serialization;
+using Limestone.Entities.Collectables;
 
 namespace Limestone
 {
@@ -25,7 +27,7 @@ namespace Limestone
     public class World
     {
         public static int worldTimer;
-        public Player player;
+        public Player2 player;
 
         Effect testEffect;
         [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Serialize)]
@@ -34,14 +36,14 @@ namespace Limestone
         private List<Tile> drawTiles = new List<Tile>();
         private List<Tile> spawnCheckTiles = new List<Tile>();
 
-        public List<Projectile2> projectiles = new List<Projectile2>();
+        public List<Projectile> projectiles = new List<Projectile>();
         public List<Enemy> enemies = new List<Enemy>();
-        public List<EnemySpawner> spawners = new List<EnemySpawner>();
-        public List<Bag> bags = new List<Bag>();
+        public List<EntitySpawner> spawners = new List<EntitySpawner>();
         public List<Particle> particles = new List<Particle>();
         public List<Entity> entities = new List<Entity>();
-
-        public List<Projectile2> testproj = new List<Projectile2>();
+        public List<Collectable> collectables = new List<Collectable>();
+        public List<Bomb> bombs = new List<Bomb>();
+        public List<NPC> npcs = new List<NPC>();
 
         public List<Rectangle> islandRects = new List<Rectangle>();
 
@@ -96,25 +98,17 @@ namespace Limestone
                         }
                     }
                     if (player != null)
+                    {
+                        Main.camera.clamp = new Rectangle(0, 0, tiles.GetLength(0) * Coordinate.coordSize, tiles.GetLength(1) * Coordinate.coordSize); //new Rectangle(0, 0, 3200, 600);
                         doneGen = true;
+                    }
                     if (doneGen)
                     {
                         if (Main.keyboard.KeyPressed(Keys.F))
                         {
-                            CreateEnemy(new EnemyBossMonolith(player.center + new Vector2(0, 256)));
-                            player.GiveXp(90000);
-                        }
-                        if (Main.keyboard.KeyPressed(Keys.Y))
-                        {
-                            SerializeHelper.Save(tiles, "tiles.json");
-                        }
-                        if (Main.keyboard.KeyPressed(Keys.H))
-                        {
-                            Tile[,] loaded = SerializeHelper.LoadTiles("tiles");
-                            tiles = loaded;
-                            //Player p = SaveHelper.LoadPlayer("test2");
-                            //entities[entities.IndexOf(player)] = p;
-                            //player = p;
+                            //CreateEnemy(new EnemyTest(player.center));
+                            //CreateBomb(new Bomb(null, Color.White, 4, player.center, Vector2.Zero, 128, 1, 0, 0, 0, 4, 128, 2));
+                            //player.GiveXp(90000);
                         }
                         if (Main.keyboard.KeyPressed(Keys.G))
                             takeshot = true;
@@ -122,9 +116,7 @@ namespace Limestone
                         foreach (Entity entity in entities.ToList())
                         {
                             if (entity.tType == EntityType.Player)
-                            {
-                                entity.Update(this);   //Projectiles, TODO particles
-                            }
+                                entity.Update(this);
                             else if (entity.tType == EntityType.Projectile)
                                 entity.Update(this);
                             else if (entity.tType == EntityType.Bag)
@@ -132,6 +124,12 @@ namespace Limestone
                             else if (entity.tType == EntityType.Spawner)
                                 entity.Update(this);
                             else if (entity.tType == EntityType.Particle)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Collectable)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.Bomb)
+                                entity.Update(this);
+                            else if (entity.tType == EntityType.NPC)
                                 entity.Update(this);
                             else if (entity.tType == EntityType.Enemy)
                             {
@@ -146,44 +144,57 @@ namespace Limestone
                                     e.Update(this);
                             }
 
+                            #region If Projectile
                             if (entity.tType == EntityType.Projectile)
                             {
-                                Projectile2 p = (Projectile2)entity;
+                                Projectile p = (Projectile)entity;
 
-                                if (!p.friendly)
+                                if (!p.invulnerable)
                                 {
-                                    if (player.hitbox.Intersects(p.hitbox))
+                                    if (!p.friendly)
                                     {
-                                        if (!p.hitEntities.Contains(p))
-                                            player.TakeDamage((int)p.damage, p, this);
-
-                                        if (!p.piercing)
-                                            p.Die(this);
-                                        else
-                                            p.hitEntities.Add(p);
-                                    }
-                                }
-                                else
-                                {
-                                    foreach (Enemy e in enemies)
-                                    {
-                                        if (!e.untargetable)
+                                        if (player.hitbox.Intersects(p.hitbox))
                                         {
-                                            if (e.hitbox.Intersects(p.hitbox))
-                                            {
-                                                if (!p.hitEntities.Contains(e))
-                                                    e.TakeDamage((int)p.damage, p, this);
+                                            if (!p.hitEntities.Contains(p))
+                                                player.TakeDamage((int)p.damage, p, this);
 
-                                                if (!p.piercing)
-                                                    entity.Die(this);
-                                                else
-                                                    p.hitEntities.Add(e);
+                                            if (!p.piercing)
+                                                p.Die(this);
+                                            else
+                                                p.hitEntities.Add(p);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (Enemy e in enemies)
+                                        {
+                                            if (!e.untargetable)
+                                            {
+                                                if (e.hitbox.Intersects(p.hitbox))
+                                                {
+                                                    if (!p.hitEntities.Contains(e))
+                                                        e.TakeDamage((int)p.damage, p, this);
+
+                                                    if (!p.piercing)
+                                                        entity.Die(this);
+                                                    else
+                                                        p.hitEntities.Add(e);
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-
+                            if (entity.tType == EntityType.Collectable)
+                            {
+                                Collectable collectable = (Collectable)entity;
+                                if (player.hitbox.Intersects(entity.hitbox))
+                                {
+                                    if (collectable.collectable)
+                                        collectable.OnPickup(this);
+                                }
+                            }
+                            #endregion
                             if (entity.tileCollides)
                             {
                                 List<Tile> nearTiles = GetNearTiles(entity);
@@ -195,11 +206,13 @@ namespace Limestone
                                         if (entity.hitbox.Intersects(t.bounds))
                                         {
                                             TileCollidable tC = (TileCollidable)t;
-                                            tC.OnCollide(this, entity);
+                                            tC.OnEntityCollide(this, entity);
+                                            entity.OnTileCollide(this, t);
                                         }
                                     }
                                 }
                             }
+
                             if (entity.dead)
                                 entities.Remove(entity);
 
@@ -219,14 +232,6 @@ namespace Limestone
                                         enemies.RemoveAt(i2--);
                                 }
                             }
-                            else if (entity.tType == EntityType.Bag)
-                            {
-                                for (int i2 = bags.Count - 1; i2 >= 0; i2--)
-                                {
-                                    if (bags[i2].dead)
-                                        bags.RemoveAt(i2--);
-                                }
-                            }
                             else if (entity.tType == EntityType.Particle)
                             {
                                 for (int i2 = particles.Count - 1; i2 >= 0; i2--)
@@ -235,18 +240,42 @@ namespace Limestone
                                         particles.RemoveAt(i2--);
                                 }
                             }
+                            else if (entity.tType == EntityType.Collectable)
+                            {
+                                for (int i2 = collectables.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (collectables[i2].dead)
+                                        collectables.RemoveAt(i2--);
+                                }
+                            }
+                            else if (entity.tType == EntityType.Bomb)
+                            {
+                                for (int i2 = bombs.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (bombs[i2].dead)
+                                        bombs.RemoveAt(i2--);
+                                }
+                            }
+                            else if (entity.tType == EntityType.NPC)
+                            {
+                                for (int i2 = npcs.Count - 1; i2 >= 0; i2--)
+                                {
+                                    if (npcs[i2].dead)
+                                        npcs.RemoveAt(i2--);
+                                }
+                            }
                         }
 
                         //camera.Zoom = .8f;
-                        if (player.cameraIsOffset)
-                            player.cameraOffsetPos = Vector2.Transform(new Vector2(0, -128), Matrix.CreateRotationZ(-Main.camera.Rotation));
-                        else player.cameraOffsetPos = Vector2.Zero;
+                        //if (player.cameraIsOffset)
+                        //player.cameraOffsetPos = Vector2.Transform(new Vector2(0, -128), Matrix.CreateRotationZ(-Main.camera.Rotation));
+                        //else player.cameraOffsetPos = Vector2.Zero;
 
-                        Main.camera.worldCenter = player.center + player.cameraOffsetPos;
+                        Main.camera.target = player.center;// + player.cameraOffsetPos;
 
                         if (enemies.FindAll(x => x.active).Count < 16)
                         {
-                            foreach (EnemySpawner spawner in spawners)
+                            foreach (EntitySpawner spawner in spawners)
                             {
                                 float distance = (player.position - spawner.position).Length();
 
@@ -311,7 +340,7 @@ namespace Limestone
                         e.DrawHealthBar(batch);
                     }*/
 
-                    foreach (EnemySpawner spawner in spawners)
+                    foreach (EntitySpawner spawner in spawners)
                         spawner.Draw(batch);
 
                     //player.DrawHealthBar(batch, minimap);
@@ -379,7 +408,6 @@ namespace Limestone
                 //batch.DrawString(Assets.GetFont("munro12"), WorldGenerator.worldGenText, Vector2.Zero, Color.White, 0, Vector2.Zero, 2, SpriteEffects.None, 0);
             }
         }
-
 
         #region Tile Getters
         public List<Tile> GetTilesAlongLine(Vector2 pointA, Vector2 pointB, float width) //NOTE Width in pixels to test; not tiles 
@@ -534,11 +562,7 @@ namespace Limestone
         }
         #endregion
 
-        public void SaveWorld(string nameas)
-        {
-        }
-
-        public void LoadWorld(Player player)
+        public void LoadWorld(Player2 player)
         {
             GuiLoading.DEBUGLOADINGINFO = "Loading save file...";
             PlayerSave save = SerializeHelper.LoadSave(@"Saves/save.json");
@@ -565,8 +589,14 @@ namespace Limestone
 
             entities.AddRange(w.spawners);
             spawners.AddRange(w.spawners);
-            this.player = player;
-            entities.Add(player);
+            this.player = new Player2(player.position);
+
+            foreach(EntitySpawner findPlayerSpawner in spawners)
+            {
+                if (findPlayerSpawner.type == 0)
+                    player.position = findPlayerSpawner.position;
+            }
+            entities.Add(this.player);
         }
 
         public void UnloadWorld()
@@ -574,13 +604,12 @@ namespace Limestone
             entities.Clear();
             enemies.Clear();
             projectiles.Clear();
-            bags.Clear();
             //player = null;
         }
 
         #region creation
         
-        public Thread CreateWorld(Player player)
+        public Thread CreateWorld(Player2 player)
         {
             tiles = new Tile[256, 256];
             /*for (int i = 0; i < 256; i++)
@@ -618,20 +647,6 @@ namespace Limestone
             return p;
         }
 
-        public Bag CreateBag(Bag b)
-        {
-            entities.Add(b);
-            bags.Add(b);
-            return b;
-        }
-
-        /*public Enemy2 CreateEnemy2(Enemy2 e)
-        {
-            entities.Add(e);
-            enemies2.Add(e);
-            return e;
-        }*/
-
         public Enemy CreateEnemy(Enemy e)
         {
             entities.Add(e);
@@ -639,17 +654,38 @@ namespace Limestone
             return e;
         }
 
-        public EnemySpawner CreateSpawner(EnemySpawner e)
+        public EntitySpawner CreateSpawner(EntitySpawner e)
         {
             entities.Add(e);
             return e;
         }
 
-        public Projectile2 CreateProjectile(Projectile2 p)
+        public Projectile CreateProjectile(Projectile p)
         {
             entities.Add(p);
             projectiles.Add(p);
             return p;
+        }
+
+        public Collectable CreateCollectable(Collectable c)
+        {
+            entities.Add(c);
+            collectables.Add(c);
+            return c;
+        }
+
+        public Bomb CreateBomb(Bomb b)
+        {
+            entities.Add(b);
+            bombs.Add(b);
+            return b;
+        }
+
+        public NPC CreateNPC(NPC n)
+        {
+            entities.Add(n);
+            npcs.Add(n);
+            return n;
         }
         #endregion
     }

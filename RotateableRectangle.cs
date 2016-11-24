@@ -215,7 +215,7 @@ namespace Limestone
             Vector2 midCheck = VectorHelper.GetMidPoint(topLeft, topRight); //Get the midpoint
             Vector2 normal = VectorHelper.GetNormal(topLeft, topRight) * 32;//Get the normal, multiply by 32 for safety's sake
 
-            float a = VectorHelper.FindAngleBetweenTwoPoints(midCheck, midCheck + normal);//Get the angle between the midpoint and the normal added to the midpoint (since normal is a scalar vector)
+            float a = VectorHelper.GetAngleBetweenPoints(midCheck, midCheck + normal);//Get the angle between the midpoint and the normal added to the midpoint (since normal is a scalar vector)
 
             return a;
         }
@@ -225,7 +225,7 @@ namespace Limestone
             Vector2 midCheck = VectorHelper.GetMidPoint(rect.topLeft, rect.topRight); //Get the midpoint
             Vector2 normal = VectorHelper.GetNormal(rect.topLeft, rect.topRight) * 32;//Get the normal, multiply by 32 for safety's sake
 
-            float a = VectorHelper.FindAngleBetweenTwoPoints(midCheck, midCheck + normal);//Get the angle between the midpoint and the normal added to the midpoint (since normal is a scalar vector)
+            float a = VectorHelper.GetAngleBetweenPoints(midCheck, midCheck + normal);//Get the angle between the midpoint and the normal added to the midpoint (since normal is a scalar vector)
             return a;
         }
 

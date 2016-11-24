@@ -24,9 +24,13 @@ namespace Limestone.Inp
     {
         public MouseState currentState;
         public MouseState prevState;
+
+        /// <summary>
+        /// Returns the mouse's position in camera space.
+        /// </summary>
         public Vector2 position { get { return currentState.Position.ToVector2(); } }
-        public Item heldItem;
-        public ItemSlot hoveredSlot;
+        //public Item heldItem;
+        //public ItemSlot hoveredSlot;
 
         public Vector2 lastClickPos;
 
@@ -45,7 +49,7 @@ namespace Limestone.Inp
 
             if (MouseKeyPress(MouseButton.Left))
                 lastClickPos = currentState.Position.ToVector2();
-            if (hoveredSlot != null)
+            /*if (hoveredSlot != null)
             {
                 if (MouseKeyPress(MouseButton.Left))
                 {
@@ -108,7 +112,7 @@ namespace Limestone.Inp
                     }
                 }
             }
-            hoveredSlot = null;
+            hoveredSlot = null;*/
         }
 
         public void PostUpdate()
@@ -132,7 +136,7 @@ namespace Limestone.Inp
 
         public void Draw(SpriteBatch batch)
         {
-            if (heldItem != null)
+            /*if (heldItem != null)
                 batch.Draw(heldItem.texture, new Rectangle((int)position.X - 8, (int)position.Y - 8, 16, 16), Color.White);
             else
             {
@@ -141,7 +145,7 @@ namespace Limestone.Inp
                     hoveredSlot.item.descriptor.DrawPlate(hoveredSlot.bounds.Center.ToVector2(), 
                         batch.GraphicsDevice.Viewport.Width, batch.GraphicsDevice.Viewport.Height, batch);
                 }
-            }
+            }*/
         }
     }
 }

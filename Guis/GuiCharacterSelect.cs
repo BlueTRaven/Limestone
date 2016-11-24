@@ -18,7 +18,7 @@ namespace Limestone.Guis
     {
         GuiMainMenu menu; //TODO make this save selector instead
 
-        Player p = null;
+        Player2 p = null;
 
         public WidgetButtonState[] charselectstates;
 
@@ -66,29 +66,19 @@ namespace Limestone.Guis
                         if (i2 != i)    //if it's not the currently looped button
                             charselectstates[i2 - 2] = WidgetButtonState.Unpressed; //unpress all of them, so we only have one button pressed
                     }
-
-                    if (i == 2)
-                        p = new Player(Vector2.Zero, Class.Archer);
-                    if (i == 3)
-                        p = new Player(Vector2.Zero, Class.IceMage);
-                    if (i == 4)
-                        p = new Player(Vector2.Zero, Class.TimeKeeper);
                 }
 
                 if (charselectstates[i - 2] == WidgetButtonState.Pressed)   //set them to pressed.
                     button.state = WidgetButtonState.Pressed;
             }
 
-            if (((WidgetButton)widgets[1]).pressed)
+            if (((WidgetButton)widgets[1]).pressed || Main.keyboard.KeyPressed(Keys.Enter))
             {
                 if (p != null)
                 {
                     Main.hold = false;
 
                     main.world = new World();
-                    /*Thread thread = main.world.CreateWorld(p);
-
-                    Main.camera.activeGui = new GuiLoading(thread);*/
 
                     Thread loadThread = new Thread(() => main.world.LoadWorld(p));
                     loadThread.Start();
