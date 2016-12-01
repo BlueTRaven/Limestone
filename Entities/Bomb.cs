@@ -200,7 +200,7 @@ namespace Limestone.Entities
                 Vector2 offset = (Main.camera.up * 8) * height;
                 batch.Draw(texture, position + offset, null, color, MathHelper.ToRadians(-angle + angleoffset), texture.Bounds.Size.ToVector2() / 2, scale, 0, 0);
 
-                if (Options.DEBUGDRAWPROJECTILEHITBOXES)
+                if (Main.options.DEBUGDRAWPROJECTILEHITBOXES)
                     hitbox.DebugDraw(batch);
             }
         }

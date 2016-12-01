@@ -152,7 +152,7 @@ namespace Limestone.Entities.Collectables
             Vector2 offset = Main.camera.up * ((shadowTexture.Height * scale) / 32) + Main.camera.up * height;
             batch.Draw(texture, position + offset, frameConfiguration.currentFrame.size, color, -Main.camera.Rotation, TextureOffset(), scale, 0, 0);
 
-            if (Options.DEBUGDRAWCOLLECTABLEHITBOXES)
+            if (Main.options.DEBUGDRAWCOLLECTABLEHITBOXES)
                 hitbox.DebugDraw(batch);
         }
 

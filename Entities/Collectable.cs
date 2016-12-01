@@ -106,7 +106,7 @@ namespace Limestone.Entities
             Vector2 flipOffset = Main.camera.right * (frameConfiguration.currentFrame.size.Width - setSize.Width) * scale + Main.camera.down * (frameConfiguration.currentFrame.size.Height - setSize.Height) * scale;
             batch.Draw(texture, position + offset - (flip ? flipOffset : Vector2.Zero), frameConfiguration.currentFrame.size, color, -Main.camera.Rotation, TextureOffset(), scale, flip ? SpriteEffects.FlipHorizontally : 0, 0);
 
-            if (Options.DEBUGDRAWCOLLECTABLEHITBOXES)
+            if (Main.options.DEBUGDRAWCOLLECTABLEHITBOXES)
                 hitbox.DebugDraw(batch);
         }
 

@@ -2,20 +2,48 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Newtonsoft.Json;
+
 namespace Limestone
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Options
     {
-        public static bool DEBUGDRAWCAMERACLAMP = false;
-        public static bool DEBUGDRAWENEMYHITBOXES = false;
-        public static bool DEBUGDRAWPROJECTILEHITBOXES = false;
-        public static bool DEBUGDRAWCOLLECTABLEHITBOXES = false;
-        public static bool DEBUGDRAWNPCHITBOXES = false;
-        public static bool DEBUGDRAWNPCINTERACTIONRADIUS = false;
+        internal bool DEBUGDRAWCAMERACLAMP = false;
+        internal bool DEBUGDRAWENEMYHITBOXES = false;
+        internal bool DEBUGDRAWPROJECTILEHITBOXES = false;
+        internal bool DEBUGDRAWPROJECTILEVELVECTOR = false;
+        internal bool DEBUGDRAWCOLLECTABLEHITBOXES = false;
+        internal bool DEBUGDRAWNPCHITBOXES = false;
+        internal bool DEBUGDRAWNPCINTERACTIONRADIUS = false;
 
-        public static Keys KEYMOVEUP = Keys.W;
-        public static Keys KEYMOVERIGHT = Keys.D;
-        public static Keys KEYMOVEDOWN = Keys.S;
-        public static Keys KEYMOVELEFT = Keys.A;
+        [JsonProperty]
+        public Keys KEYMOVEUP = Keys.W;
+        public readonly Keys KEYMOVEUPDEFAULT = Keys.W;
+
+        [JsonProperty]
+        public Keys KEYMOVERIGHT = Keys.D;
+        public readonly Keys KEYMOVERIGHTDEFAULT = Keys.D;
+
+        [JsonProperty]
+        public Keys KEYMOVEDOWN = Keys.S;
+        public readonly Keys KEYMOVEDOWNDEFAULT = Keys.S;
+
+        [JsonProperty]
+        public Keys KEYMOVELEFT = Keys.A;
+        public readonly Keys KEYMOVELEFTDEFAULT = Keys.A;
+
+        public Options()
+        {   //dummy ctor for json.net
+
+        }
+
+        public void ResetToDefaults()
+        {
+            KEYMOVEUP = KEYMOVEUPDEFAULT;
+            KEYMOVELEFT = KEYMOVELEFTDEFAULT;
+            KEYMOVERIGHT = KEYMOVERIGHTDEFAULT;
+            KEYMOVEDOWN = KEYMOVEDOWNDEFAULT;
+        }
     }
 }

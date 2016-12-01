@@ -53,7 +53,7 @@ namespace Limestone.Guis
 
             if (((WidgetButton)widgets[2]).pressed)
             {
-                main.Exit();
+                main.EndGame();
             }
         }
 

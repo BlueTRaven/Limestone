@@ -92,6 +92,7 @@ namespace Limestone.Utility
             textures.Add("guiChars", content.Load<Texture2D>("Textures/Guis/guiChars"));
             textures.Add("healthBarChunk", content.Load<Texture2D>("Textures/Guis/guiElementHealthBar"));
             textures.Add("healthBarSegment", content.Load<Texture2D>("Textures/Guis/guiElementHealthBarSegment"));
+            textures.Add("staminaBarSegment", content.Load<Texture2D>("Textures/Guis/guiElementStaminaBarSegment"));
             //Enemies
             textures.Add("char1", content.Load<Texture2D>("Textures/char1"));
             textures.Add("char2", content.Load<Texture2D>("Textures/char2"));

@@ -35,9 +35,9 @@ namespace Limestone.Guis
                 Main.camera.activeGui = new GuiPauseMenu();
         }
 
-        public void DisplayDialogue(string text, int speed, int timeout)
+        public void DisplayDialogue(string text, string name, int speed, int timeout)
         {
-            dialogue.AddText(text, speed, timeout);
+            dialogue.AddText(text, name, speed, timeout);
         }
 
         public override void PostUpdate()

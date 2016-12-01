@@ -148,10 +148,9 @@ namespace Limestone
                             if (entity.tType == EntityType.Projectile)
                             {
                                 Projectile p = (Projectile)entity;
-
-                                if (!p.invulnerable)
+                                if (!p.friendly)
                                 {
-                                    if (!p.friendly)
+                                    if (!player.untargetable)
                                     {
                                         if (player.hitbox.Intersects(p.hitbox))
                                         {
@@ -164,22 +163,22 @@ namespace Limestone
                                                 p.hitEntities.Add(p);
                                         }
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    foreach (Enemy e in enemies)
                                     {
-                                        foreach (Enemy e in enemies)
+                                        if (!e.untargetable)
                                         {
-                                            if (!e.untargetable)
+                                            if (e.hitbox.Intersects(p.hitbox))
                                             {
-                                                if (e.hitbox.Intersects(p.hitbox))
-                                                {
-                                                    if (!p.hitEntities.Contains(e))
-                                                        e.TakeDamage((int)p.damage, p, this);
+                                                if (!p.hitEntities.Contains(e))
+                                                    e.TakeDamage((int)p.damage, p, this);
 
-                                                    if (!p.piercing)
-                                                        entity.Die(this);
-                                                    else
-                                                        p.hitEntities.Add(e);
-                                                }
+                                                if (!p.piercing)
+                                                    entity.Die(this);
+                                                else
+                                                    p.hitEntities.Add(e);
                                             }
                                         }
                                     }
@@ -213,6 +212,7 @@ namespace Limestone
                                 }
                             }
 
+                            #region deletion
                             if (entity.dead)
                                 entities.Remove(entity);
 
@@ -265,13 +265,9 @@ namespace Limestone
                                 }
                             }
                         }
+                        #endregion
 
-                        //camera.Zoom = .8f;
-                        //if (player.cameraIsOffset)
-                        //player.cameraOffsetPos = Vector2.Transform(new Vector2(0, -128), Matrix.CreateRotationZ(-Main.camera.Rotation));
-                        //else player.cameraOffsetPos = Vector2.Zero;
-
-                        Main.camera.target = player.center;// + player.cameraOffsetPos;
+                        Main.camera.target = player.center;
 
                         if (enemies.FindAll(x => x.active).Count < 16)
                         {
@@ -284,7 +280,6 @@ namespace Limestone
                                     if (Main.rand.Next(spawner.rate) == 0)
                                     {
                                         spawner.SpawnEnemies(this);
-                                        //Console.WriteLine("spawned enemy at " + spawner.position);
                                     }
                                 }
                             }
@@ -335,35 +330,8 @@ namespace Limestone
                         }
                     }
 
-                    /*foreach (Enemy e in enemies)
-                    {
-                        e.DrawHealthBar(batch);
-                    }*/
-
                     foreach (EntitySpawner spawner in spawners)
                         spawner.Draw(batch);
-
-                    //player.DrawHealthBar(batch, minimap);
-
-                    //DrawHelper.StartDrawCameraSpace(batch);
-
-
-                    //DrawHelper.StartDrawWorldSpace(batch);
-
-                    if (respawnTimer > 0)
-                        respawnTimer--;
-
-                    if (player.dead && respawnTimer == -20)
-                        respawnTimer = 120;
-
-                    /*if (respawnTimer <= 0 && respawnTimer > -20)
-                    {
-                        Main.AwaitNextKeyPress();
-
-                        UnloadWorld();
-                        CreateWorld();
-                        respawnTimer = -20;
-                    }*/
 
                     Vector2 prev = Vector2.Zero;
                     foreach (Vector2 p in points)
@@ -612,18 +580,6 @@ namespace Limestone
         public Thread CreateWorld(Player2 player)
         {
             tiles = new Tile[256, 256];
-            /*for (int i = 0; i < 256; i++)
-            {
-                for (int y = 0; i < 256; y++)
-                {
-
-                }
-            }*/
-            //gd = new DungeonGenerator(this, 1, player);
-            //worldGen = new WorldGenerator(this, new Coordinate(64));
-            //gd.Generate();
-            //mapLoadThread = new Thread(gd.Generate);
-            //mapLoadThread.Start();
             return mapLoadThread;
         }
 

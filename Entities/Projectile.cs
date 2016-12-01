@@ -289,14 +289,14 @@ namespace Limestone.Entities
                 else
                     batch.Draw(texture, position + offset + wave, null, color, MathHelper.ToRadians(-angle + angleoffset), texture.Bounds.Size.ToVector2() / 2, scale, 0, 0);
 
-                if (Options.DEBUGDRAWPROJECTILEHITBOXES)
+                if (Main.options.DEBUGDRAWPROJECTILEHITBOXES)
                 hitbox.DebugDraw(batch);
 
-                DrawGeometry.DrawLine(batch, center, center + VectorHelper.GetAngleNormVector(angle1) * 128, Color.Red);
-                float angle2 = VectorHelper.GetAngleBetweenPoints(center, center + velocity);
-                DrawGeometry.DrawLine(batch, center, center + VectorHelper.GetAngleNormVector(angle2) * 128, Color.Red);
-                DrawGeometry.DrawLine(batch, center, center + VectorHelper.GetAngleNormVector(angle) * 128, Color.Red);
-
+                if (Main.options.DEBUGDRAWPROJECTILEVELVECTOR)
+                {
+                    float angle2 = VectorHelper.GetAngleBetweenPoints(center, center + velocity);
+                    DrawGeometry.DrawLine(batch, center, center + VectorHelper.GetAngleNormVector(angle2) * 128, Color.Red);
+                }
             }
         }
 

@@ -109,7 +109,9 @@ namespace Limestone.Tiles
 
         public override void DrawOutline(SpriteBatch batch)
         {
-            if (setCardinals)
+            batch.Draw(wallTexture, realPosition, null, Color.White, MathHelper.ToRadians(0), Vector2.Zero, 6, 0, 0);
+
+            /*if (setCardinals)
             {
                 for (int i = 0; i < 32; i++)
                 {
@@ -122,7 +124,7 @@ namespace Limestone.Tiles
                     if (adjacentTiles[0] != null && !(adjacentTiles[0] is TileWall))
                         batch.Draw(wallTexture, bounds.Center.ToVector2() + Main.camera.up * i, new Rectangle(0, i / 4, 8, 1), Color.White, MathHelper.ToRadians(270), DrawHelper.GetTextureOffset(texture.Bounds.Location.ToVector2(), texture.Bounds.Size.ToVector2()), 6, 0, 0);
                 }
-            }
+            }*/
         }
 
         public override void Draw(SpriteBatch batch)

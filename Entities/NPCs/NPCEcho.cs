@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Limestone.Utility;
 using Limestone.Tiles;
 using Limestone.Items;
-
+using Limestone.Entities;
 using Limestone.Interface;
 using Limestone.Guis;
 
@@ -47,28 +47,6 @@ namespace Limestone.Entities.NPCs
                 currentMove.Update();
             }
 
-            if (!interacting && !spokento && Main.mouse.MouseKeyPress(Inp.MouseButton.Left))
-            {
-                none.DisplayDialogue("'?'\n. . .", 8, 0);
-                none.DisplayDialogue("'?'\nIt has been a long time since there has been a visitor here.", 4, 0);
-                none.DisplayDialogue("'?'\n. . .", 6, 0);
-                none.DisplayDialogue("'?'\nI would ask you to leave. In fact, I would destroy you, as I have done to most others who have come here. But something keeps me from doing so. Something.", 4, 0);
-                none.DisplayDialogue("'?'\nI feel strangely obligated to trust you, stranger.", 4, 0);
-                none.DisplayDialogue("'?'\nSo, I would tell you of this place.", 4, 0);
-                none.DisplayDialogue("'?'\nThis is a prison. One made long ago to keep the worst of the old world dead.", 4, 0);
-                none.DisplayDialogue("'?'\nBut it is falling into ruin. It may soon be that their doors will open, and their horrors wraught upon the world.", 4, 0);
-                none.DisplayDialogue("'?'\nI fear I must ask for your help, adventurer.", 4, 0);
-                none.DisplayDialogue("'?'\nI see strength within you... as well as something I do not understand. \nBut something tells me you will help me.", 4, 0);
-                none.DisplayDialogue("'?'\nI am Echo, caretaker of this dead prison.", 6, 0);
-                none.DisplayDialogue("'Echo'\nPlease. I need your help dearly.", 4, 0);
-
-                none.DisplayDialogue("'You'\n...\n\nWhat would you have me do?", 6, 0);
-                facingAngle += 90;
-                none.DisplayDialogue("'Echo'\nI require you to delve deep inside the vaults, to find a way to seal the cells closed fully once again.", 4, 0);
-
-                spokento = true;
-            }
-
             float waveAngle = elapsedTime * 3.14f * .008f;
 
             height = 128 + (float)Math.Sin(waveAngle) * 32;
@@ -78,15 +56,28 @@ namespace Limestone.Entities.NPCs
         {
             if (!interacting)
             {
-                
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue(". . .", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("It has been a long time since there has been a visitor here.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue(". . .", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("I would ask you to leave. In fact, I would destroy you, as I have done to most others who have come here. But something keeps me from doing so. Something.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("I feel strangely obligated to trust you, stranger.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("So, I would tell you of this place.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("This is a prison. One made long ago to keep the worst of the old world dead.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("But it is falling into ruin. It may soon be that their doors will open, and their horrors wraught upon the world.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("I fear I must ask for your help, adventurer.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("I see strength within you... as well as something I do not understand. \nBut something tells me you will help me.", "?", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("I am Echo, caretaker of this dead prison.", "?", 3, 360))));
+
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("Please. I need your help dearly.", "Echo", 3, 360))));
+                moveQueue.Enqueue(new MoveStyle(0, new Move(() => MoveDialogue("", "Echo", 3, 360))));
             }
             base.OnInteract();
         }
 
-        private void MoveDialogue(string dialogue, int speed)
+        private void MoveDialogue(string dialogue, string name, int speed, int timeout)
         {
             GuiNone none = (GuiNone)Main.camera.activeGui;
-            none.DisplayDialogue(dialogue, speed, 0);
+            none.DisplayDialogue(dialogue, name, speed, timeout);
         }
 
         public override Entity Copy()

@@ -248,7 +248,7 @@ namespace Limestone
                 foreach (Enemy e in main.world.enemies)
                     e.DrawHealthBar(batch);
 
-            if (Options.DEBUGDRAWCAMERACLAMP)
+            if (Main.options.DEBUGDRAWCAMERACLAMP)
                 DrawGeometry.DrawHollowRectangle(batch, clamp, 4, Color.Red);
 
             DrawHelper.StartDrawCameraSpace(batch);

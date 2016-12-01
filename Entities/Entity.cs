@@ -31,6 +31,13 @@ namespace Limestone.Entities
         NPC,
         NONE
     }
+
+    public enum FlashType
+    {
+        Tint,
+        Solid
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     [Serializable]
     public abstract class Entity : ISerializable
@@ -132,6 +139,9 @@ namespace Limestone.Entities
         protected Color flashColor;
         protected float flashDuration, flashDurationMax;
         protected int flashTotalDuration = -1;
+        protected FlashType flashType;
+        protected Texture2D baseTexture;
+        private bool usingBase;
 
         public bool invulnerable = false;
         public bool invulnOverride = false;
@@ -162,18 +172,35 @@ namespace Limestone.Entities
 
             RunFrameConfiguration();
 
-            if (flashTotalDuration >= 0)
+            if (flashTotalDuration > 0)
             {
                 flashTotalDuration--;
+
                 flashDuration--;
 
                 if (flashDuration <= 0)
                     flashDuration = flashDurationMax;
 
-                if (flashDuration <= flashDurationMax / 2)
-                    color = Color.Lerp(baseColor, flashColor, flashDuration / flashDurationMax);
-                else
-                    color = Color.Lerp(flashColor, baseColor, flashDuration / flashDurationMax);
+                if (flashType == FlashType.Tint)
+                {
+                    if (flashDuration <= flashDurationMax / 2)
+                        color = Color.Lerp(baseColor, flashColor, flashDuration / flashDurationMax);
+                    else
+                        color = Color.Lerp(flashColor, baseColor, flashDuration / flashDurationMax);
+                }
+                else if (flashType == FlashType.Solid)
+                {
+                    if (usingBase)
+                        texture = baseTexture;
+                    else
+                        texture = Assets.GetSolidFilledTexture(texture, flashColor);
+
+                    if (flashDuration == 1)
+                        usingBase = !usingBase;
+
+                    if (flashTotalDuration <= 0)
+                        texture = baseTexture;
+                }
             }
 
             if (flips)
@@ -207,6 +234,21 @@ namespace Limestone.Entities
                 texts[i].Update();
                 if (texts[i].dead)
                     texts.RemoveAt(i--);
+            }
+        }
+
+        protected void SetFlash(FlashType type, Color color, int flashDuration, int totalDuration, bool invuln = false)
+        {
+            flashType = type;
+            flashColor = color;
+            flashDurationMax = flashDuration;
+            this.flashDuration = flashDuration;
+            flashTotalDuration = totalDuration;
+
+            if (baseTexture == null)
+            {
+                flashTotalDuration = 0;
+                Console.WriteLine("Base texture not set!");
             }
         }
 

@@ -73,6 +73,24 @@ namespace Limestone
         
         }
 
+        public static Options LoadOptions()
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(@"options.json"))
+                {
+                    string content = sr.ReadToEnd();
+                    Options obj = JsonConvert.DeserializeObject<Options>(content);
+
+                    return obj;
+                }
+            }
+            catch
+            {
+                return new Options();
+            }
+        }
+
         public static object Load(string loadName, JsonConverter converter)
         {
             using (StreamReader sr = new StreamReader(@"" + loadName + ".json"))

@@ -23,6 +23,7 @@ namespace Limestone.Entities
 
         private bool slowsDown;
         private float percentPerFrame;
+
         public Particle(Texture2D texture, Vector2 position, Vector2 direction, Color color, float scale, int timeleft) : base(position)
         {
             this.tType = EntityType.Particle;
@@ -33,6 +34,27 @@ namespace Limestone.Entities
             maxTimeleft = timeleft;
 
             hitbox = new RotateableRectangle(new Rectangle((int)position.X, (int)position.Y, (int)scale, (int)scale));
+
+            if (texture == null)
+                this.texture = Assets.GetTexture("whitePixel");
+            else this.texture = texture;
+        }
+
+        public Particle(Texture2D texture, Vector2 position, float angle, float speed, float distance, Color color, float scale) : base(position)
+        {
+            this.tType = EntityType.Particle;
+
+            this.angle = angle;
+
+            this.color = color;
+            this.scale = scale;
+
+            hitbox = new RotateableRectangle(new Rectangle((int)position.X, (int)position.Y, (int)scale, (int)scale));
+
+            maxTimeleft = (int)(distance / speed);
+            timeleft = maxTimeleft;
+
+            velocity = Vector2.Normalize(Vector2.Transform(new Vector2(-1, 0), Matrix.CreateRotationZ(MathHelper.ToRadians(angle)))) * speed;
 
             if (texture == null)
                 this.texture = Assets.GetTexture("whitePixel");

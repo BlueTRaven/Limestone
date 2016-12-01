@@ -24,7 +24,7 @@ namespace Limestone.Guis
         {
             loadingThread = thread;
 
-            widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.worldCenter - new Vector2(64, 128)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Loading", TextAlignment.Center, Color.White)
+            widgets.Add(new WidgetTextButton(new Rectangle((Main.camera.center - new Vector2(64, 128)).ToPoint(), new Point(128, 32)), Assets.GetFont("bitfontMunro23BOLD"), "Loading", TextAlignment.Center, Color.White)
                 .SetBackgroundColor(Color.White, Color.White, Color.White));
         }
 
@@ -49,9 +49,9 @@ namespace Limestone.Guis
             outerRot += .05f;
             midRot -= .025f;
             inRot += 0.0125f;
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, outerRot, new Vector2(64, 64), 1f, SpriteEffects.None, 0);
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, midRot, new Vector2(64, 64), .5f, SpriteEffects.None, 0);
-            batch.Draw(Assets.GetTexture("loading"), Main.camera.worldCenter, null, Color.White, inRot, new Vector2(64, 64), .25f, SpriteEffects.None, 0);
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.center, null, Color.White, outerRot, new Vector2(64, 64), 1f, SpriteEffects.None, 0);
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.center, null, Color.White, midRot, new Vector2(64, 64), .5f, SpriteEffects.None, 0);
+            batch.Draw(Assets.GetTexture("loading"), Main.camera.center, null, Color.White, inRot, new Vector2(64, 64), .25f, SpriteEffects.None, 0);
         }
     }
 }

@@ -203,3 +203,4 @@ C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Projectiles\blood.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\glowMask.xnb
 C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Projectiles\framesCard1.xnb
+C:\Users\taylo\Documents\Programming\C#\Game\Limestone\Limestone\bin\Windows\x86\Debug\Content\Textures\Guis\guiElementStaminaBarSegment.xnb

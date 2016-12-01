@@ -60,7 +60,7 @@ namespace Limestone.Entities
             if (type == 1)
             {
                 spawnDistance = 512;
-                entities.Add(new NPCEcho(position));
+                entities.Add(new EnemyStalactite(position, 32));
             }
         }
 

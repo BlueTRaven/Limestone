@@ -81,8 +81,10 @@ namespace Limestone
         public static GameMouse mouse;
         public static GameKeyboard keyboard;
         public static Random rand;
-        public static Chatbox cbox;
+
         public static PlayerSave playersave;
+        public static Options options;
+
         public static readonly int WIDTH = 800, HEIGHT = 600;
         public static bool isActive = true;
 
@@ -120,7 +122,10 @@ namespace Limestone
             camera = new GameCamera(GraphicsDevice.Viewport);
             mouse = new GameMouse();
             keyboard = new GameKeyboard();
-            cbox = new Chatbox();
+
+            //options = new Options();
+
+            options = SerializeHelper.LoadOptions();
 
             base.Initialize();
         }
@@ -155,10 +160,6 @@ namespace Limestone
         {
             globalTimer++;
             Main.isActive = IsActive;
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                //Exit();
-
-            cbox.Update(this);
 
             mouse.Update();
             keyboard.Update();
@@ -204,13 +205,11 @@ namespace Limestone
             base.Update(gameTime);
         }
 
-        public static void AwaitNextKeyPress()
+        public void EndGame()
         {
-            while (true)
-            {
-                if (!keyboard.KeyPressed(Keys.None))
-                    break;
-            }
+            SerializeHelper.Save(options, "options.json");
+
+            Exit();
         }
 
         public static void SlowDown(SlowDownMode mode, int duration)

@@ -22,7 +22,9 @@ namespace Limestone.Guis.Widgets
         {
             public bool done;
 
-            private string fullText, currentText;
+            private string fullText;
+            public string name;
+
             private int timeBetween, timeoutTime;
             private readonly int timeBetweenFull;
 
@@ -31,9 +33,11 @@ namespace Limestone.Guis.Widgets
 
             public StringBuilder fullTextClipped;
 
-            public Dialogue(string text, int betweenTime, int timeoutTime)
+            public Dialogue(string text, string name, int betweenTime, int timeoutTime)
             {
                 this.fullText = text;
+                this.name = name;
+
                 this.timeBetween = betweenTime;
                 this.timeBetweenFull = timeBetween;
                 this.timeoutTime = timeoutTime;
@@ -46,18 +50,16 @@ namespace Limestone.Guis.Widgets
             public void Update()
             {
                 timeBetween--;
-                timeoutTime--;
 
                 if (timeBetween <= 0)
                 {
-                    timeBetween = timeBetweenFull;
-
                     if (currentChar < fullTextChars.Count())
                     {
-                        currentChar++;
+                        timeBetween = timeBetweenFull;
 
-                        fullTextClipped.Append(fullTextChars[currentChar]);
+                        fullTextClipped.Append(fullTextChars[currentChar++]);
                     }
+                    else timeoutTime--;
                 }
 
                 if (timeoutTime <= 0)
@@ -69,14 +71,6 @@ namespace Limestone.Guis.Widgets
 
         Queue<Dialogue> queuedDialogues = new Queue<Dialogue>();
         Dialogue currentDialogue;
-
-        List<Tuple<string, int>> queuedText = new List<Tuple<string, int>>();
-        string _currentTextFull;
-        string currentTextFull { get { return _currentTextFull; } set { _currentTextFull = value; currentTextChars = value.ToCharArray(); currentTextClipped = new StringBuilder(); currentChar = 0; } }
-        char[] currentTextChars;
-
-        StringBuilder currentTextClipped;
-        int currentChar, timeToNext, timeMax;
 
         SpriteFont font;
 
@@ -93,56 +87,33 @@ namespace Limestone.Guis.Widgets
 
             if (draw)
             {
-                //timeoutTime--;
+                currentDialogue.Update();
 
-                if (currentChar < currentTextChars.Length)
+                if (pressed || currentDialogue.done)
                 {
-                    timeToNext--;
-
-                    if (timeToNext <= 0)
-                    {
-                        timeToNext = timeMax;
-
-                        currentTextClipped.Append(currentTextChars[currentChar++]);
-
-                        if (currentTextChars[currentChar - 1] != ' ' && currentTextChars[currentChar - 1] != '\n' && currentTextChars[currentChar - 1] != '\r')   //if it's not a space, newline, or character break character
-                        Assets.GetSoundEffect("buttonclick").Play();
-                    }
-                }
-
-                if (pressed)// || timeoutTime <= 0)
-                {
-                    if (queuedText.Count > 0)
-                    {
-                        if (queuedText.Count > 1)
-                        {
-                            currentTextFull = queuedText[1].Item1;
-                            timeMax = queuedText[1].Item2;
-                        }
-                        queuedText.RemoveAt(0);  //remove from the start
-                    }
+                    if (queuedDialogues.Count <= 0)
+                        draw = false;
+                    else
+                        currentDialogue = queuedDialogues.Dequeue();
                 }
             }
-            if (queuedText.Count == 0)
-                draw = false;
         }
 
-        public void AddText(string text, int time, int timeout)
+        /// <summary>
+        /// Adds text to the dialogue widget.
+        /// </summary>
+        /// <param name="text">Text to be displayed.</param>
+        /// <param name="name">The text's name, where it comes from eg. "Joe" or "Info" or "Tutorial"</param>
+        /// <param name="timeBetween">The time it takes for each letter to appear.</param>
+        /// <param name="timeout">the time it takes for the dialogue box to disappear *note* AFTER all letters have been revealed.</param>
+        public void AddText(string text, string name, int timeBetween, int timeout)
         {
+            Dialogue newDialog = new Dialogue(text, name, timeBetween, timeout);
             if (queuedDialogues.Count <= 0)
             {
-                currentDialogue = new Dialogue(text, time, timeout);
-                queuedDialogues.Enqueue(currentDialogue);
+                currentDialogue = newDialog;
             }
-
-            /*if (queuedText.Count == 0)
-            {
-                currentTextFull = text;
-                timeMax = time;
-            }
-            queuedText.Add(new Tuple<string, int>(text, time));*/
-
-            //this.timeoutTime = timeout;
+            queuedDialogues.Enqueue(newDialog);
             draw = true;
         }
 
@@ -153,8 +124,15 @@ namespace Limestone.Guis.Widgets
                 DrawGeometry.DrawRectangle(batch, bounds, Color.Gray);
                 DrawGeometry.DrawRectangle(batch, new Rectangle(bounds.X + 3, bounds.Y + 3, bounds.Width - 6, bounds.Height - 6), Color.White);
 
-                string textf = TextHelper.WrapText(font, currentTextClipped.ToString(), bounds.Width);
-                batch.DrawString(font, textf, bounds.Location.ToVector2() + new Vector2(8), Color.Black);
+                Rectangle nameplaterect = new Rectangle(bounds.X + 24, bounds.Y - 16, 96, 16);
+                DrawGeometry.DrawRectangle(batch, nameplaterect, Color.Gray);
+                DrawGeometry.DrawRectangle(batch, new Rectangle(bounds.X + 27, bounds.Y - 13, 90, 19), Color.White);
+
+                Vector2 nameSize = font.MeasureString(currentDialogue.name);
+                batch.DrawString(font, currentDialogue.name, nameplaterect.Center.ToVector2() - new Vector2((nameSize.X / 2), 4), Color.Black);
+
+                string textf = TextHelper.WrapText(font, currentDialogue.fullTextClipped.ToString(), bounds.Width - 16);
+                batch.DrawString(font, textf, bounds.Location.ToVector2() + new Vector2(8, 4), Color.Black);
             }
         }
 

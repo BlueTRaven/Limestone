@@ -198,7 +198,7 @@ namespace Limestone.Entities
             foreach (DamageText dt in texts)
                 dt.Draw(batch);
 
-            if (Options.DEBUGDRAWENEMYHITBOXES)
+            if (Main.options.DEBUGDRAWENEMYHITBOXES)
                 hitbox.DebugDraw(batch);
         }
 
@@ -207,14 +207,6 @@ namespace Limestone.Entities
             position += (moveDirec * speed) * this.speed;
             hitbox.MoveTo(position);
             idleMove = false;
-        }
-
-        protected void SetFlash(Color color, int flashDuration, int totalDuration, bool invuln = false)
-        {
-            flashColor = color;
-            flashDurationMax = flashDuration;
-            this.flashDuration = flashDuration;
-            flashTotalDuration = totalDuration;
         }
 
         protected void SetIdle(int timer, float speed)

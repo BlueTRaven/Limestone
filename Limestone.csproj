@@ -45,8 +45,9 @@
     <Compile Include="Entities\Collectables\CollectableBlood.cs" />
     <Compile Include="Entities\Collectables\CollectableCoin.cs" />
     <Compile Include="Entities\Enemies\EnemyBossCardguy.cs" />
+    <Compile Include="Entities\Enemies\EnemyStalactite.cs" />
     <Compile Include="Entities\Enemies\EnemyTest.cs" />
-    <Compile Include="Entities\Enemies\MoveStyle.cs" />
+    <Compile Include="Entities\MoveStyle.cs" />
     <Compile Include="Entities\FrameConfiguration.cs" />
     <Compile Include="Entities\NPC.cs" />
     <Compile Include="Entities\NPCs\NPCEcho.cs" />
@@ -67,13 +68,6 @@
     <Compile Include="DrawGeometry.cs" />
     <Compile Include="Entities\Bag.cs" />
     <Compile Include="Entities\DamageText.cs" />
-    <Compile Include="Entities\Enemies\EnemyBossMonolith.cs" />
-    <Compile Include="Entities\Enemies\EnemyDarkBrute.cs" />
-    <Compile Include="Entities\Enemies\EnemyDarkTower.cs" />
-    <Compile Include="Entities\Enemies\EnemyShade.cs" />
-    <Compile Include="Entities\Enemies\EnemyShadeEye.cs" />
-    <Compile Include="Entities\Enemies\EnemySwampSlime.cs" />
-    <Compile Include="Entities\Enemies\EnemyWisp.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\EntitySpawner.cs" />
     <Compile Include="Entities\Entity.cs" />

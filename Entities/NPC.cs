@@ -132,10 +132,10 @@ namespace Limestone.Entities
             foreach (DamageText dt in texts)
                 dt.Draw(batch);
 
-            if (Options.DEBUGDRAWNPCHITBOXES)
+            if (Main.options.DEBUGDRAWNPCHITBOXES)
                 hitbox.DebugDraw(batch);
 
-            if (Options.DEBUGDRAWNPCINTERACTIONRADIUS)
+            if (Main.options.DEBUGDRAWNPCINTERACTIONRADIUS)
                 DrawGeometry.DrawCircle(batch, center, interactiveDistance, new Color(Color.Blue, 63));
         }
     }

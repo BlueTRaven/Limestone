@@ -44,7 +44,11 @@ namespace Limestone.Entities.Enemies
             health = 10;
             maxHealth = 10;
 
+            quest = true;
+
             setSize = new Rectangle(0, 0, 8, 8);
+
+            baseTexture = texture;
         }
 
         public override void Update(World world)
@@ -67,72 +71,146 @@ namespace Limestone.Entities.Enemies
 
         private void ChooseNextMove(World world)
         {
-            int next = Main.rand.Next(3);
+            int next = Main.rand.Next(6);
 
-            if (next >= 0 && next < 3)
+            if (next >= 0 && next < 6)
             {
                 switch (next)
                 {
                     default:
                         {
-                            moveQueue.Enqueue(new MoveStyle(0, () => ShootTest(world)));
-                            moveQueue.Enqueue(new MoveStyle(600, MoveWait));
+                            moveQueue.Enqueue(new MoveStyle(0, () => MovePlayer(world)));
+                            moveQueue.Enqueue(new MoveStyle(45, MoveWait));
+                            moveQueue.Enqueue(new MoveStyle(0, () => MoveThrowDirectionalCards(world)));
+
+                            moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
+                            moveQueue.Enqueue(new MoveStyle(120, MoveWait));
                             break;
                         }
-                    /*case 2:
+                    case 5:
                         {
-                            int value = (int)Main.rand.Next(2, 8) / 2;
+                            int value = (int)Main.rand.Next(8, 24);
+
+                            moveQueue.Enqueue(new MoveStyle(0, () => MovePlayer(world)));
+                            for (int i = 1; i <= value; i++)
+                            {
+                                moveQueue.Enqueue(new MoveStyle(0, () => MoveThrowSingleBomb(world)));
+                                moveQueue.Enqueue(new MoveStyle(7, MoveWait));
+                            }
+
+                            moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
+                            moveQueue.Enqueue(new MoveStyle(120, MoveWait));
+                            break;
+                        }
+                    case 4:
+                        {
+                            int value = (int)Main.rand.Next(3, 8);
 
                             for (int i = 1; i <= value; i++)
                             {
                                 moveQueue.Enqueue(new MoveStyle(0, () => MoveTeleport(world)));
-                                moveQueue.Enqueue(new MoveStyle(30 - (int)(healthLost * 1.5f), MoveWait));
+                                moveQueue.Enqueue(new MoveStyle(0, () => MoveThrowDice(world)));
+                                moveQueue.Enqueue(new MoveStyle(20 - (int)(healthLost * 2), MoveWait));
+                            }
+
+                            moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
+                            moveQueue.Enqueue(new MoveStyle(120, MoveWait));
+
+                            break;
+                        }
+                    case 3:
+                        {
+                            int value = (int)Main.rand.Next(1, 4);
+
+                            for (int i = 1; i <= value; i++)
+                            {
+                                moveQueue.Enqueue(new MoveStyle(0, () => MoveTeleport(world)));
+                                moveQueue.Enqueue(new MoveStyle(30 - (int)(healthLost * 2), MoveWait));
+                                moveQueue.Enqueue(new MoveStyle(0, () => MoveShootRicochet(world)));
+                                moveQueue.Enqueue(new MoveStyle(60, MoveWait));
+                            }
+
+                            moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
+                            moveQueue.Enqueue(new MoveStyle(120, MoveWait));
+
+                            break;
+                        }
+                    case 2:
+                        {
+                            int value = (int)Main.rand.Next(1, 4);
+
+                            for (int i = 1; i <= value; i++)
+                            {
+                                moveQueue.Enqueue(new MoveStyle(0, () => MoveTeleport(world)));
+                                moveQueue.Enqueue(new MoveStyle(30 - (int)(healthLost * 2), MoveWait));
                                 moveQueue.Enqueue(new MoveStyle(50, () => MoveCharge(world)));
 
                                 if (i != value)
                                     moveQueue.Enqueue(new MoveStyle(15, MoveWait));
                             }
-                            moveQueue.Enqueue(new MoveStyle(120, MoveWait));
 
                             moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
                             moveQueue.Enqueue(new MoveStyle(120, MoveWait));
                             break;
-                        }*/
-                    /*case 1:
+                        }
+                    case 1:
                         {
-                            int value = (int)Main.rand.Next(2, 8) / 2;
-                            Console.WriteLine("numqueued: " + value);
+                            int value = (int)Main.rand.Next(1, 4);
                             for (float i = 1; i <= value; i++)
                             {
                                 moveQueue.Enqueue(new MoveStyle(0, () => MoveTeleport(world)));
-                                moveQueue.Enqueue(new MoveStyle(30 - (int)(healthLost * 1.5f), MoveWait));
+                                moveQueue.Enqueue(new MoveStyle(30 - (int)(healthLost * 2), MoveWait));
                                 moveQueue.Enqueue(new MoveStyle(0, () => MoveThrowCards(world)));
-                                moveQueue.Enqueue(new MoveStyle(120 - (int)(healthLost * 4f), MoveWait));
+                                moveQueue.Enqueue(new MoveStyle(60 - (int)(healthLost * 4f), MoveWait));
                             }
 
                             moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
                             moveQueue.Enqueue(new MoveStyle(120, MoveWait));
                             break;
-                        }*/
+                        }
                 }
             }
         }
 
         #region moves
-        private void ShootTest(World world)
+        private void MoveThrowSingleBomb(World world)
         {
-            Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8, 32), rotToPlayer, 45, 2, 10240, 1);
-            p.deathFunction = (x => 
+            Bomb b = new Bomb(null, Color.Red, 8, center, new Vector2(4), 56, 0, 0, (float)Main.rand.NextDouble(0, 360), 0, 2, (float)Main.rand.NextDouble(64, 256), 1);
+            world.CreateBomb(b);
+        }
+
+        private void MoveShootRicochet(World world)
+        {
+            if (health > 5)
             {
-                if (!x.hitEntities.Contains(world.player))
+                Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8, 32), rotToPlayer, 45, 16, 1024, 1);
+
+                p.deathFunction = (x =>
                 {
-                    Projectile p2 = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, x.center, Vector2.Zero, new Vector2(8, 32), -x.angle, 45, 2, 10240, 1);
+                    Projectile p2 = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, x.center, Vector2.Zero, new Vector2(8, 32), VectorHelper.GetAngleBetweenPoints(x.center, world.player.center), 45, 16, 1024, 1);
                     p2.invulnTicks = 60;
                     p2.tileCollides = false;
                     world.CreateProjectile(p2);
+                });
+                world.CreateProjectile(p);
+            }
+            else
+            {
+                for (int i = -10; i <= 10; i += 10)
+                {
+                    Projectile p = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, center, Vector2.Zero, new Vector2(8, 32), rotToPlayer + i * 2, 45, 16, 1024, 1);
+
+                    p.deathFunction = (x =>
+                    {
+                        Projectile p2 = new Projectile(Assets.GetTexFromSource("projectilesFull", 0, 0), Color.White, 4, x.center, Vector2.Zero, new Vector2(8, 32), VectorHelper.GetAngleBetweenPoints(x.center, world.player.center), 45, 16, 1024, 1);
+                        p2.invulnTicks = 60;
+                        p2.tileCollides = false;
+                        world.CreateProjectile(p2);
+                    });
+
+                    world.CreateProjectile(p);
                 }
-            });
-            world.CreateProjectile(p);
+            }
         }
 
         private void MovePlayer(World world)
@@ -233,7 +311,7 @@ namespace Limestone.Entities.Enemies
             }
         }
 
-        private void MoveThrowDirectionalCards(World world, int time)
+        private void MoveThrowDirectionalCards(World world)
         {
             float offset = (float)Main.rand.NextDouble(0, 360);
 
@@ -285,6 +363,19 @@ namespace Limestone.Entities.Enemies
             base.TakeDamage(amt, source, world);
 
             GuiNone none = (GuiNone)Main.camera.activeGui;
+
+            if (!invulnerable)
+            {
+                moveQueue.Clear();
+
+                moveQueue.Enqueue(new MoveStyle(0, () => MoveReturn(world)));
+                moveQueue.Enqueue(new MoveStyle(120, MoveWait));
+                moveQueue.Enqueue(new MoveStyle(0, () => MoveThrowBombs(world)));
+                moveQueue.Enqueue(new MoveStyle(30, MoveWait));
+
+                SetFlash(FlashType.Solid, Color.Red, 2, 150);
+                invulnTicks = 150;
+            }
             if (dead)
             {
                 //TODO death dialogue
